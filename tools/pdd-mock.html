@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>拼多多客服页结构仿真（验证抓取与回写算法）</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 13px/1.6 "Microsoft YaHei", sans-serif; background: #f2f3f5; color: #1f2329; }
+  .app { display: flex; height: 900px; }
+  /* 左列：会话列表（类名故意做成混淆的样子，模拟真实平台） */
+  .Jd_9a { width: 190px; background: #fff; border-right: 1px solid #ebedf0; display: flex; flex-direction: column; }
+  .Jd_9a ._title { padding: 12px; font-weight: 600; border-bottom: 1px solid #f2f3f5; }
+  .kL_1 { flex: 1; overflow-y: auto; }
+  .x_2f { padding: 10px 12px; border-bottom: 1px solid #fafafa; cursor: pointer; position: relative; }
+  .x_2f.on { background: #fff1eb; }
+  .x_2f .n_3 { font-size: 13px; font-weight: 600; }
+  .x_2f .m_4 { color: #86909c; font-size: 12px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .x_2f .b_5 { position: absolute; right: 10px; top: 12px; background: #f53f3f; color: #fff; border-radius: 9px; font-size: 11px; padding: 0 5px; }
+
+  /* 中间：聊天区 */
+  .chatArea { flex: 1; background: #fff; display: flex; flex-direction: column; min-width: 0; }
+  .hd_7 { height: 52px; display: flex; align-items: center; gap: 8px; padding: 0 16px; border-bottom: 1px solid #f2f3f5; }
+  .hd_7 .t_8 { font-size: 15px; font-weight: 600; }
+  .hd_7 .tag_9 { color: #ff7d00; border: 1px solid #ffd6a3; border-radius: 3px; font-size: 11px; padding: 0 4px; }
+  .msgs_1 { flex: 1; overflow-y: auto; padding: 12px 20px; }
+  .tm_2 { text-align: center; color: #b4b8c0; font-size: 11px; margin: 10px 0; }
+  .sys_3 { text-align: center; color: #86909c; font-size: 12px; background: #f7f8fa; border-radius: 4px; width: 220px; margin: 8px auto; padding: 2px 0; }
+  .rw_4 { display: flex; gap: 8px; margin: 10px 0; align-items: flex-start; }
+  .rw_4.right { flex-direction: row-reverse; }
+  .av_5 { width: 40px; height: 40px; border-radius: 50%; background: #f53f3f; color: #fff; text-align: center; line-height: 40px; font-size: 12px; flex: none; }
+  .bud_6 { max-width: 56%; background: #f2f3f5; border-radius: 6px; padding: 8px 12px; }
+  .rw_4.right .bud_6 { background: #e8f3ff; }
+  .meta_7 { color: #b4b8c0; font-size: 11px; margin-top: 4px; }
+  .img_8 { width: 120px; height: 90px; display: block; }
+
+  .ft_9 { border-top: 1px solid #f2f3f5; padding: 10px 16px 14px; }
+  .ed_1 { min-height: 56px; border: 1px solid #e5e6eb; border-radius: 4px; padding: 8px 10px; outline: none; }
+  .send_2 { float: right; margin-top: 8px; background: #165dff; color: #fff; border-radius: 4px; padding: 6px 18px; cursor: pointer; }
+
+  /* 右列：订单信息（干扰项，不能被当成聊天区） */
+  .ord_3 { width: 150px; background: #fff; border-left: 1px solid #ebedf0; padding: 12px; }
+  .ord_3 .p_4 { color: #f53f3f; font-size: 16px; font-weight: 600; }
+  .ord_3 .l_5 { color: #86909c; font-size: 12px; margin: 4px 0; }
+
+  #report { position: fixed; left: 8px; bottom: 8px; width: 640px; max-height: 400px; overflow: auto;
+    background: #0f172a; color: #d1fae5; font: 12px/1.7 Consolas, monospace; padding: 10px; border-radius: 8px; z-index: 99; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="Jd_9a">
+    <div class="_title">全部会话</div>
+    <div class="kL_1">
+      <div class="x_2f on"><div class="n_3">游客</div><div class="m_4">有电话吗？</div><span class="b_5">1</span></div>
+      <div class="x_2f"><div class="n_3">福**哥</div><div class="m_4">好的，谢谢</div></div>
+      <div class="x_2f"><div class="n_3">玲**姐</div><div class="m_4">什么时候发货</div></div>
+    </div>
+  </div>
+
+  <div class="chatArea">
+    <div class="hd_7"><span class="t_8">游客</span><span class="tag_9">不同电脑</span></div>
+    <div class="msgs_1">
+      <div class="tm_2">10-25 20:18</div>
+      <div class="sys_3">以上是历史消息</div>
+      <div class="rw_4 right">
+        <div class="av_5">我</div>
+        <div class="bud_6">我的意思是如果不相信的话可以问问梦蕾旗舰店</div>
+      </div>
+      <div class="rw_4 right"><div class="bud_6"><img class="img_8" src="https://img.alicdn.com/favicon.ico" alt="" /></div></div>
+      <div class="rw_4">
+        <div class="av_5">游</div>
+        <div class="bud_6">是不是正品端？</div>
+      </div>
+      <div class="rw_4">
+        <div class="av_5">游</div>
+        <div class="bud_6">有电话吗？</div>
+      </div>
+      <div class="rw_4 right">
+        <div class="av_5">我</div>
+        <div class="bud_6">正品保证一瓶一码亲，本店铺出售的所有商品都是经过质检，合格才出售的哦亲</div>
+        <div class="meta_7">已读</div>
+      </div>
+      <div class="rw_4">
+        <div class="av_5">游</div>
+        <div class="bud_6">我也是别人买的，如果效果不好，人家会讲的</div>
+      </div>
+      <div class="rw_4 right">
+        <div class="av_5">我</div>
+        <div class="bud_6">好的，那我今天下午就打</div>
+        <div class="meta_7">已读</div>
+      </div>
+      <div class="tm_2">10-25 20:22</div>
+      <div class="rw_4">
+        <div class="av_5">游</div>
+        <div class="bud_6">一瓶兑多少水啊</div>
+      </div>
+    </div>
+    <div class="ft_9">
+      <div class="ed_1" contenteditable="true" data-placeholder="请输入内容"></div>
+      <span class="send_2">发送</span>
+    </div>
+  </div>
+
+  <div class="ord_3">
+    <div class="p_4">￥116.00</div>
+    <div class="l_5">已发货，待签收</div>
+    <div class="l_5">订单编号 261022-345726042434022</div>
+    <div class="l_5">下单时间 2026/10/22 20:50</div>
+    <div class="l_5">甲氨基阿维菌素苯甲酸盐杀虫剂</div>
+  </div>
+</div>
+
+<div id="report">正在加载抓取算法…</div>
+
+<script>
+/* 模拟平台行为：点列表切换会话、点发送把文字变成一条我方气泡 */
+(function () {
+  Array.prototype.forEach.call(document.querySelectorAll('.x_2f'), function (el) {
+    el.addEventListener('click', function () {
+      Array.prototype.forEach.call(document.querySelectorAll('.x_2f'), function (o) { o.classList.remove('on'); });
+      el.classList.add('on');
+      document.querySelector('.hd_7 .t_8').textContent = el.querySelector('.n_3').textContent;
+    });
+  });
+  document.querySelector('.send_2').addEventListener('click', function () {
+    var ed = document.querySelector('.ed_1');
+    var text = (ed.innerText || '').trim();
+    if (!text) return;
+    var row = document.createElement('div');
+    row.className = 'rw_4 right';
+    row.innerHTML = '<div class="av_5">我</div><div class="bud_6"></div><div class="meta_7">已读</div>';
+    row.querySelector('.bud_6').textContent = text;
+    document.querySelector('.msgs_1').appendChild(row);
+    ed.textContent = '';
+  });
+})();
+</script>
+
+<script>
+/* 模拟扩展环境，让 content.js 能在普通页面里跑起来 */
+window.chrome = {
+  runtime: {
+    id: 'mock',
+    lastError: null,
+    sendMessage: function (msg, cb) { if (cb) setTimeout(function () { cb({ ok: true }); }, 0); },
+    onMessage: { addListener: function () {} },
+  },
+  storage: { sync: { get: function (defs, cb) { cb(Object.assign({}, defs, { hookUrl: 'http://mock/hook', enabled: false, onlyUnread: true })); } } },
+};
+</script>
+<script src="/xm-content-test.js?v=20"></script>
+<script>
+(async function () {
+  var out = [];
+  var report = document.getElementById('report');
+  function log(s) { out.push(s); report.textContent = out.join('\n'); }
+  var api = window.__xmBridgeApi;
+  if (!api) { log('✗ 算法没有挂到页面（__xmBridgeApi 不存在）'); document.title = 'FAIL :: 算法未加载'; return; }
+
+  var checks = [];
+  function check(label, cond, extra) {
+    checks.push(!!cond);
+    log((cond ? '✓ ' : '✗ ') + label + (extra ? '  → ' + extra : ''));
+  }
+
+  try {
+    log('视口 ' + innerWidth + 'x' + innerHeight + '   URL ' + location.href);
+
+    var panel = api.findChatPanel();
+    var pr = panel && panel.getBoundingClientRect();
+    check('找到聊天消息区（不是左栏会话列表）',
+      panel && panel.className === 'msgs_1',
+      panel ? (panel.className + ' ' + Math.round(pr.width) + 'x' + Math.round(pr.height)) : '无');
+
+    var name = api.activeBuyerName();
+    check('识别当前客户名', name === '游客', name || '未识别');
+
+    var r = api.readLiveThread();
+    var cust = (r.msgs || []).filter(function (m) { return m.role === 'customer'; });
+    var ag = (r.msgs || []).filter(function (m) { return m.role === 'agent'; });
+    var sys = (r.msgs || []).filter(function (m) { return m.role === 'system'; });
+    var img = (r.msgs || []).filter(function (m) { return m.kind === 'image'; });
+    var noise = (r.msgs || []).filter(function (m) { return /^(已读|未读|来自手机端|我$|游$)/.test(m.text); });
+
+    (r.msgs || []).forEach(function (m) {
+      log('    [' + m.role + '][' + m.kind + '] ' + (m.time || '-') + '  ' + String(m.text).slice(0, 30));
+    });
+    check('客户消息 4 条', cust.length === 4, cust.length + ' 条');
+    check('我方消息 4 条（含 1 张图）', ag.length === 4, ag.length + ' 条');
+    check('系统提示 1 条', sys.length === 1, sys.length + ' 条');
+    check('图片消息 1 条', img.length === 1, img.length + ' 条');
+    check('无「已读 / 头像字」噪声', noise.length === 0, noise.length + ' 条');
+
+    /* 回写：按名字切客户 → 填字 → 点发送 */
+    var opened = api.openConversationByName('玲**姐', {});
+    var hd = (document.querySelector('.hd_7 .t_8') || {}).textContent;
+    check('按名字切到「玲**姐」', opened && hd === '玲**姐', opened ? ('标题 ' + hd) : '列表里没找到');
+
+    api.openConversationByName('游客', {});
+    var text = '【自检】回写测试';
+    var res = await api.deliverReply({ name: '游客', text: text }, {});
+    var after = api.readLiveThread();
+    var lastAgent = (after.msgs || []).filter(function (m) { return m.role === 'agent'; }).slice(-1)[0];
+    var inputLeft = (document.querySelector('.ed_1').innerText || '').trim();
+    check('工作台回复填进平台输入框并点发送', res && res.ok, res && (res.error || 'ok'));
+    check('平台聊天区出现这条回复', lastAgent && lastAgent.text.indexOf('【自检】') === 0, lastAgent ? lastAgent.text.slice(0, 20) : '无');
+    check('发送后输入框已清空', inputLeft === '', inputLeft ? ('残留「' + inputLeft.slice(0, 10) + '」') : '空');
+
+    var snap = api.buildSnapshot();
+    log('诊断快照：输入框 ' + snap.inputs.length + ' / 可滚动区 ' + snap.scrollers.length +
+      ' / 类名命中 ' + snap.classHits.length + ' / 发送按钮 ' + snap.buttons.length +
+      ' / 约 ' + Math.round(JSON.stringify(snap).length / 1024) + 'KB');
+
+    var pass = checks.every(Boolean);
+    log('');
+    log(pass ? '结论：PASS（抓取 + 回写都正常）' : ('结论：FAIL（' + checks.filter(function (c) { return !c; }).length + ' 项未通过）'));
+    document.title = (pass ? 'PASS' : 'FAIL') + ' :: ' + out.join(' | ');
+  } catch (e) {
+    log('✗ 运行出错: ' + (e && e.message) + '\n' + (e && e.stack ? String(e.stack).split('\n').slice(0, 3).join(' ') : ''));
+    document.title = 'FAIL :: ' + out.join(' | ');
+  }
+})();
+</script>
+</body>
+</html>

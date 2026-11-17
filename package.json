@@ -1,0 +1,20 @@
+{
+  "name": "xiaoman-ai-workbench",
+  "version": "3.0.0",
+  "private": true,
+  "description": "小满AI · 电商客服工作台（全栈）：MySQL 持久化、注册登录、多店铺会话聚合、AI 自动回复、售后工单、数据看板、后台管理",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "db:check": "node tools/db-check.js",
+    "db:migrate": "node tools/migrate-sqlite-to-mysql.js",
+    "test": "node tools/smoke-test.js"
+  },
+  "dependencies": {
+    "mysql2": "^3.24.6"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  }
+}

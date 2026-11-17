@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>免费注册 · 小满AI 工作台</title>
+  <link rel="stylesheet" href="font-awesome.min.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+</head>
+<body>
+  <div class="auth-wrap">
+    <aside class="auth-brand">
+      <div class="brand-logo"><span class="mark"><i class="fa fa-comments"></i></span> 小满AI</div>
+      <div class="brand-main">
+        <h1>加入小满AI<br />电商客服聚合工作台</h1>
+        <p>注册后你将加入团队工作空间，成为成员子账号：可以先浏览工作台的全部数据效果，操作权限由管理员在「子账号管理」中统一分配。</p>
+        <div class="brand-points">
+          <div class="pt"><i class="fa fa-rocket"></i> 注册即浏览，无需配置服务器</div>
+          <div class="pt"><i class="fa fa-users"></i> 管理员统一分配操作权限</div>
+          <div class="pt"><i class="fa fa-plug"></i> 10 平台店铺与客服会话聚合</div>
+        </div>
+      </div>
+      <div class="brand-foot">© 2026 小满AI · 电商客服聚合工作台</div>
+    </aside>
+
+    <main class="auth-form-side">
+      <div class="auth-card">
+        <h2>创建账号</h2>
+        <p class="sub">注册后自动登录进入工作台（默认只读，权限由管理员分配）</p>
+
+        <form id="regForm" novalidate>
+          <div class="field">
+            <label for="name">姓名</label>
+            <div class="input-wrap">
+              <i class="fa fa-user-o lead"></i>
+              <input id="name" type="text" autocomplete="name" placeholder="如：张小明" maxlength="20" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="company">部门 / 团队 <span style="color:#B5B9C2;font-weight:400">（选填，便于管理员识别）</span></label>
+            <div class="input-wrap">
+              <i class="fa fa-building-o lead"></i>
+              <input id="company" type="text" placeholder="如：小满旗舰店客服组" maxlength="30" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="email">邮箱</label>
+            <div class="input-wrap">
+              <i class="fa fa-envelope-o lead"></i>
+              <input id="email" type="email" autocomplete="username" placeholder="you@example.com" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="password">密码</label>
+            <div class="input-wrap">
+              <i class="fa fa-lock lead"></i>
+              <input id="password" type="password" autocomplete="new-password" placeholder="至少 6 位" />
+              <button class="eye" type="button" id="togglePw" aria-label="显示密码"><i class="fa fa-eye"></i></button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="password2">确认密码</label>
+            <div class="input-wrap">
+              <i class="fa fa-lock lead"></i>
+              <input id="password2" type="password" autocomplete="new-password" placeholder="再输入一次密码" />
+            </div>
+          </div>
+
+          <label class="agree">
+            <input type="checkbox" id="agree" />
+            <span>我已阅读并同意服务条款，理解演示数据仅用于功能体验</span>
+          </label>
+
+          <button class="btn-main" id="submitBtn" type="submit">创建账号并进入</button>
+          <div class="msg" id="msg"></div>
+        </form>
+
+        <div class="auth-alt">已有账号？<a href="/login">直接登录</a></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const msg = $('msg');
+
+    $('togglePw').addEventListener('click', () => {
+      const p = $('password');
+      const show = p.type === 'password';
+      p.type = show ? 'text' : 'password';
+      $('togglePw').innerHTML = show ? '<i class="fa fa-eye-slash"></i>' : '<i class="fa fa-eye"></i>';
+    });
+
+    function show(text, type) {
+      msg.className = 'msg ' + (type || 'err');
+      msg.textContent = text || '';
+    }
+
+    $('regForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = $('name').value.trim();
+      const company = $('company').value.trim();
+      const email = $('email').value.trim();
+      const password = $('password').value;
+      const password2 = $('password2').value;
+
+      if (name.length < 2) return show('请填写真实姓名（至少 2 个字）');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return show('邮箱格式不正确');
+      if (password.length < 6) return show('密码至少 6 位');
+      if (password !== password2) return show('两次输入的密码不一致');
+      if (!$('agree').checked) return show('请先勾选同意服务条款');
+
+      const btn = $('submitBtn');
+      btn.disabled = true;
+      btn.textContent = '正在创建…';
+      show('');
+      try {
+        const r = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, company, email, password }),
+        });
+        const j = await r.json();
+        if (!r.ok) throw new Error(j.error || '注册失败');
+        show('注册成功，正在进入工作台…', 'ok');
+        btn.textContent = '正在进入…';
+        setTimeout(() => { location.href = '/app'; }, 500);
+      } catch (err) {
+        show(err.message || '网络错误，请确认服务已启动');
+        btn.disabled = false;
+        btn.textContent = '创建账号并进入';
+      }
+    });
+  </script>
+</body>
+</html>

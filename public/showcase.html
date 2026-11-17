@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>小满AI · 视觉效果展示（数据概览大屏）</title>
+<style>
+  /* ============ 主题变量 ============ */
+  :root{
+    --bg:#F5F7FA; --panel:#FFFFFF; --panel-2:#FAFBFC;
+    --text:#1D2129; --muted:#86909C; --border:#E5E6EB;
+    --shadow:0 12px 32px rgba(20,30,60,.06);
+    --primary:#165DFF; --primary-2:#0EA5B7; --green:#00B42A;
+    --purple:#722ED1; --orange:#FF7D00; --red:#F53F3F;
+    --grad:linear-gradient(135deg,#165DFF,#0EA5B7);
+    --chip:#F2F3F5;
+  }
+  body.dark{
+    --bg:#0E1117; --panel:#171B22; --panel-2:#1C212B;
+    --text:#E5E6EB; --muted:#8A93A3; --border:#2A2F3A;
+    --shadow:0 12px 32px rgba(0,0,0,.45); --chip:#20262F;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased;
+    min-height:100vh; overflow-x:hidden;
+  }
+  /* 背景光晕 */
+  .orb{position:fixed; border-radius:50%; filter:blur(70px); opacity:.5; z-index:0; pointer-events:none}
+  .orb.a{width:420px;height:420px; background:#165DFF; top:-140px; right:-80px; opacity:.16}
+  .orb.b{width:360px;height:360px; background:#00B42A; bottom:-120px; left:-100px; opacity:.13}
+  body.dark .orb{opacity:.28}
+
+  /* ============ 顶栏 ============ */
+  .topbar{
+    position:sticky; top:0; z-index:30; height:60px; display:flex; align-items:center; gap:18px;
+    padding:0 22px; background:var(--panel); border-bottom:1px solid var(--border);
+    backdrop-filter:saturate(1.2) blur(6px);
+  }
+  .brand{display:flex; align-items:center; gap:11px}
+  .brand-logo{width:34px;height:34px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;box-shadow:0 8px 18px rgba(22,93,255,.32)}
+  .brand-name{font-weight:700;font-size:16px;line-height:1.1}
+  .brand-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .ver{display:inline-block;font-size:10px;color:var(--primary);background:rgba(22,93,255,.1);padding:1px 6px;border-radius:6px;margin-left:6px;vertical-align:middle}
+  .search{flex:1;max-width:420px;margin:0 auto;display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;
+    background:var(--panel-2);border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:13px;cursor:pointer;transition:.2s}
+  .search:hover{border-color:var(--primary)}
+  .search .kbd{margin-left:auto;font-size:11px;background:var(--chip);border:1px solid var(--border);border-radius:5px;padding:1px 6px;color:var(--muted)}
+  .top-right{display:flex;align-items:center;gap:14px;margin-left:auto}
+  .icon-btn{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer;font-size:17px;transition:.2s}
+  .icon-btn:hover{background:var(--chip);color:var(--text)}
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+
+  /* ============ 外壳 ============ */
+  .shell{position:relative;z-index:1;display:flex;align-items:flex-start}
+  .sidebar{width:212px;flex:0 0 212px;padding:18px 12px;position:sticky;top:60px;height:calc(100vh - 60px)}
+  .nav-group{font-size:11px;color:var(--muted);letter-spacing:.6px;margin:14px 10px 8px}
+  .nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;color:var(--muted);font-size:13.5px;cursor:pointer;transition:.18s;margin-bottom:3px}
+  .nav-item .ni{width:18px;text-align:center;font-size:15px}
+  .nav-item:hover{background:var(--chip);color:var(--text)}
+  .nav-item.active{background:rgba(22,93,255,.1);color:var(--primary);font-weight:600}
+  .nav-item.active .ni{color:var(--primary)}
+
+  .main{flex:1;min-width:0;padding:24px 28px 60px;max-width:1480px;margin:0 auto}
+  .hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}
+  .hero h1{margin:0;font-size:25px;font-weight:700}
+  .hero p{margin:6px 0 0;color:var(--muted);font-size:13.5px}
+  .step-badge{background:#1D2129;color:#fff;font-size:12px;padding:6px 12px;border-radius:9px;font-weight:600;letter-spacing:.4px;white-space:nowrap}
+  body.dark .step-badge{background:#2A2F3A}
+  .fx-badge{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:11.5px;color:var(--primary);background:rgba(22,93,255,.1);padding:4px 10px;border-radius:20px}
+
+  /* ============ 卡片网格 ============ */
+  .grid{display:grid;gap:18px}
+  .kpis{grid-template-columns:repeat(5,1fr);margin-bottom:18px}
+  .row-2{grid-template-columns:1.65fr 1fr;margin-bottom:18px}
+  .row-2b{grid-template-columns:1fr 1fr;margin-bottom:18px}
+  @media(max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr)}.row-2,.row-2b{grid-template-columns:1fr}}
+
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:18px 20px;position:relative;overflow:hidden}
+  .panel h3{margin:0 0 4px;font-size:15px;font-weight:650}
+  .panel .sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+
+  /* 弹射归位动画 */
+  .reveal{opacity:0;transform:translateY(26px) scale(.97);animation:pop .75s cubic-bezier(.34,1.56,.64,1) forwards;animation-delay:calc(var(--i,0)*70ms)}
+  @keyframes pop{to{opacity:1;transform:none}}
+
+  /* KPI */
+  .kpi .k-label{font-size:13px;color:var(--muted)}
+  .kpi .k-val{font-size:30px;font-weight:750;margin:8px 0 6px;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+  .kpi .k-delta{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;padding:2px 8px;border-radius:20px}
+  .k-delta.up{color:var(--green);background:rgba(0,180,42,.1)}
+  .k-delta.down{color:var(--red);background:rgba(245,63,63,.1)}
+  .k-delta.good{color:var(--green);background:rgba(0,180,42,.1)}
+  .kpi .spark{margin-top:12px;width:100%;height:38px}
+
+  /* 图表通用 */
+  svg{display:block}
+  .chart-area{width:100%}
+  .legend{display:flex;gap:16px;font-size:12px;color:var(--muted);margin-top:8px}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:middle}
+  .seg{display:inline-flex;background:var(--chip);border-radius:9px;padding:3px;gap:2px}
+  .seg button{border:0;background:transparent;color:var(--muted);font-size:12px;padding:4px 12px;border-radius:7px;cursor:pointer;transition:.18s}
+  .seg button.on{background:var(--panel);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+  /* 环形 */
+  .donut-wrap{display:flex;align-items:center;gap:18px}
+  .donut-num{font-size:26px;font-weight:750;font-variant-numeric:tabular-nums}
+  .donut-meta{font-size:12.5px;color:var(--muted);line-height:1.7}
+  .donut-meta b{color:var(--text)}
+
+  /* 横向条 */
+  .hbar{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .hbar .name{width:64px;font-size:13px;flex:0 0 64px}
+  .hbar .track{flex:1;height:12px;background:var(--chip);border-radius:8px;overflow:hidden}
+  .hbar .fill{display:block;height:100%;width:0;border-radius:8px;transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+  .hbar .val{width:54px;text-align:right;font-size:13px;font-weight:650;font-variant-numeric:tabular-nums}
+
+  /* 纵向条 */
+  .vbars{display:flex;align-items:flex-end;gap:14px;height:150px;padding-top:10px}
+  .vbar{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end}
+  .vbar .col{width:60%;max-width:40px;border-radius:8px 8px 0 0;height:0;background:linear-gradient(180deg,#165DFF,#0EA5B7);animation:colGrow 1.2s cubic-bezier(.22,1,.36,1) forwards}
+  @keyframes colGrow{from{height:0}to{height:var(--h)}}
+  .vbar .lab{font-size:11px;color:var(--muted);white-space:nowrap}
+
+  /* 售后 */
+  .stat-cards{grid-template-columns:repeat(4,1fr)}
+  .stat .s-val{font-size:28px;font-weight:750;font-variant-numeric:tabular-nums}
+  .stat .s-lab{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .stat .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+
+  .mini-note{font-size:11px;color:var(--muted);margin-top:10px}
+  .src-tag{position:absolute;top:14px;right:16px;font-size:10.5px;padding:3px 9px;border-radius:20px;font-weight:600}
+  .src-live{color:var(--green);background:rgba(0,180,42,.12)}
+  .src-demo{color:var(--orange);background:rgba(255,125,0,.12)}
+
+  /* ============ 命令面板 ⌘K ============ */
+  .overlay{position:fixed;inset:0;background:rgba(15,20,30,.45);backdrop-filter:blur(4px);z-index:100;display:none;align-items:flex-start;justify-content:center;padding-top:14vh}
+  .overlay.show{display:flex;animation:fade .2s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .palette{width:560px;max-width:92vw;background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.35);overflow:hidden;animation:rise .25s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes rise{from{transform:translateY(16px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+  .pal-input{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--border)}
+  .pal-input input{flex:1;border:0;outline:0;background:transparent;color:var(--text);font-size:15px}
+  .pal-input .esc{font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:5px;padding:2px 7px}
+  .pal-list{max-height:300px;overflow:auto;padding:8px}
+  .pal-group{font-size:11px;color:var(--muted);padding:8px 12px 4px}
+  .pal-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;cursor:pointer;font-size:14px}
+  .pal-item:hover,.pal-item.sel{background:var(--chip)}
+  .pal-item .ic{width:26px;height:26px;border-radius:8px;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 26px}
+  .pal-item .arrow{margin-left:auto;color:var(--muted)}
+  .pal-foot{display:flex;gap:16px;padding:10px 16px;border-top:1px solid var(--border);font-size:11.5px;color:var(--muted)}
+  .pal-foot b{color:var(--text)}
+</style>
+</head>
+<body>
+  <div class="orb a"></div><div class="orb b"></div>
+
+  <!-- 顶栏 -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">⚡</div>
+      <div>
+        <div class="brand-name">小满AI<span class="ver">v2.0</span></div>
+        <div class="brand-sub">电商客服聚合工作台</div>
+      </div>
+    </div>
+    <div class="search" id="openPalette">
+      <span>🔍</span><span>搜索菜单、店铺或命令…</span><span class="kbd">⌘K</span>
+    </div>
+    <div class="top-right">
+      <div class="icon-btn" title="通知">🔔</div>
+      <div class="icon-btn" id="toggleTheme" title="切换深浅色">🌗</div>
+      <div class="avatar">李</div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+      <div class="nav-group">工作台</div>
+      <div class="nav-item active"><span class="ni">📊</span>数据概览</div>
+      <div class="nav-item"><span class="ni">💬</span>会话聚合</div>
+      <div class="nav-item"><span class="ni">🏬</span>店铺管理</div>
+      <div class="nav-item"><span class="ni">🔌</span>平台接入</div>
+      <div class="nav-group">智能</div>
+      <div class="nav-item"><span class="ni">🤖</span>AI 配置</div>
+      <div class="nav-item"><span class="ni">📚</span>知识库</div>
+      <div class="nav-item"><span class="ni">⚡</span>快捷回复</div>
+      <div class="nav-group">运营</div>
+      <div class="nav-item"><span class="ni">🎫</span>售后工单</div>
+      <div class="nav-item"><span class="ni">📈</span>数据报表</div>
+      <div class="nav-item"><span class="ni">⚙️</span>系统设置</div>
+    </aside>
+
+    <!-- 主区 -->
+    <main class="main">
+      <div class="hero reveal" style="--i:0">
+        <div>
+          <h1 id="greet">下午好，李展宇</h1>
+          <p id="dateLine">系统运行概览、会话脉搏与今日接待轨迹。</p>
+          <span class="fx-badge">✨ 视觉演示 · 卡片弹射归位 + 图表绘制动效</span>
+        </div>
+        <div class="step-badge" id="stepBadge">01 / 数据概览</div>
+      </div>
+
+      <!-- KPI -->
+      <section class="grid kpis" id="kpis"></section>
+
+      <!-- 大图 + 环形 -->
+      <section class="grid row-2">
+        <div class="panel reveal" style="--i:5">
+          <div class="panel-head">
+            <div>
+              <h3>会话脉搏</h3>
+              <div class="sub">AI 与人工会话量趋势 · 近 7 天</div>
+            </div>
+            <div class="seg" id="trendSeg">
+              <button class="on" data-r="7">近7天</button>
+              <button data-r="30">近30天</button>
+            </div>
+          </div>
+          <div class="chart-area" id="areaChart"></div>
+          <div class="legend">
+            <span><i style="background:#165DFF"></i>AI 接待</span>
+            <span><i style="background:#00B42A"></i>人工接待</span>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div class="panel reveal" style="--i:6">
+            <span class="src-tag" id="srcTag"></span>
+            <h3>AI 接待占比</h3>
+            <div class="donut-wrap">
+              <div id="donutAi"></div>
+              <div class="donut-meta">
+                AI 自动承接 <b id="aiPct">0%</b> 的会话<br/>
+                人工介入率 <b id="humanPct">0%</b><br/>
+                平均首响 <b id="firstResp">0s</b>
+              </div>
+            </div>
+          </div>
+          <div class="panel reveal" style="--i:7">
+            <h3>客户满意度</h3>
+            <div class="donut-wrap">
+              <div id="donutSat"></div>
+              <div class="donut-meta">
+                综合满意度 <b id="satVal">0%</b><br/>
+                近 7 日持续走高<br/>
+                <span style="color:var(--green)">▲ 优于行业基准</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 平台分布 + 店铺排行 -->
+      <section class="grid row-2b">
+        <div class="panel reveal" style="--i:8">
+          <h3>各平台会话分布</h3>
+          <div class="sub">多渠道店铺咨询量占比</div>
+          <div id="platBars"></div>
+        </div>
+        <div class="panel reveal" style="--i:9">
+          <h3>店铺会话排行</h3>
+          <div class="sub">Top 店铺本周会话量</div>
+          <div class="vbars" id="storeBars"></div>
+        </div>
+      </section>
+
+      <!-- 售后 -->
+      <section class="grid stat-cards" id="afterSales"></section>
+      <p class="mini-note" id="footNote"></p>
+    </main>
+  </div>
+
+  <!-- 命令面板 -->
+  <div class="overlay" id="overlay">
+    <div class="palette">
+      <div class="pal-input">
+        <span>🔍</span>
+        <input id="palInput" placeholder="输入命令，如「深色」「刷新」…" autocomplete="off"/>
+        <span class="esc">Esc</span>
+      </div>
+      <div class="pal-list" id="palList"></div>
+      <div class="pal-foot"><span><b>↑↓</b> 选择</span><span><b>↵</b> 执行</span><span><b>?</b> 帮助</span><span style="margin-left:auto">命令面板</span></div>
+    </div>
+  </div>
+
+<script>
+/* ===================== 数据 ===================== */
+const DEMO = {
+  brand:{name:"小满AI",product:"电商客服工作台"},
+  dashboard:{
+    kpis:[
+      {key:"sessions",label:"今日会话量",value:1286,unit:"",delta:12.4,color:"#165DFF",spark:[820,932,901,1010,1120,1180,1286]},
+      {key:"firstResp",label:"平均首响",value:6.2,unit:"s",delta:-18.5,color:"#00B42A",spark:[12,11,9.5,8.2,7.4,6.8,6.2],good:true},
+      {key:"aiRate",label:"AI 接待占比",value:78.6,unit:"%",delta:6.1,color:"#722ED1",spark:[58,62,66,69,72,75,78.6]},
+      {key:"satisfaction",label:"客户满意度",value:96.3,unit:"%",delta:1.8,color:"#FF7D00",spark:[93,94,94.5,95,95.6,96,96.3]},
+      {key:"conversion",label:"询单转化率",value:34.7,unit:"%",delta:3.2,color:"#0EA5B7",spark:[28,29.5,31,32,33,34,34.7]}
+    ],
+    trend7d:{labels:["10-23","10-24","10-25","10-26","10-27","10-28","10-29"],ai:[612,680,655,742,810,902,1010],human:[268,240,255,232,248,260,276]},
+    trend30d:{labels:["W1","W2","W3","W4"],ai:[4200,4800,5200,6100],human:[1700,1620,1580,1640]},
+    platformDist:[{name:"淘宝",value:428,color:"#FF5000"},{name:"京东",value:302,color:"#E1251B"},{name:"拼多多",value:356,color:"#E02E24"},{name:"抖音",value:200,color:"#161823"}],
+    storeRanking:[{name:"小满旗舰店",sessions:428},{name:"小满优选",sessions:356},{name:"小满自营店",sessions:302},{name:"小满好物",sessions:200}],
+    afterSales:{total:46,pending:12,processing:9,done:25,avgHours:3.4,refundRate:2.8}
+  }
+};
+let DATA = DEMO, LIVE = false;
+
+/* ===================== 工具 ===================== */
+const $ = s=>document.querySelector(s);
+const fmt = n=>n.toLocaleString('en-US');
+function countUp(el,target,dur=1100,dec=0,suffix=''){
+  const start=performance.now();
+  function tick(t){
+    const p=Math.min(1,(t-start)/dur);
+    const e=1-Math.pow(1-p,3);
+    el.textContent=(dec? (target*e).toFixed(dec):Math.round(target*e).toLocaleString('en-US'))+suffix;
+    if(p<1)requestAnimationFrame(tick);
+    else el.textContent=(dec?target.toFixed(dec):Math.round(target).toLocaleString('en-US'))+suffix;
+  }
+  requestAnimationFrame(tick);
+}
+function sparkSVG(arr,color,w=240,h=38){
+  const max=Math.max(...arr),min=Math.min(...arr),rng=(max-min)||1;
+  const pts=arr.map((v,i)=>[i/(arr.length-1)*w, h-4-((v-min)/rng)*(h-10)]);
+  const line=pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  const area=`0,${h} `+line+` ${w},${h}`;
+  const id='g'+Math.random().toString(36).slice(2,7);
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" class="spark">
+    <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${color}" stop-opacity=".28"/><stop offset="1" stop-color="${color}" stop-opacity="0"/>
+    </linearGradient></defs>
+    <polygon points="${area}" fill="url(#${id})"/>
+    <polyline points="${line}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      stroke-dasharray="600" stroke-dashoffset="600" style="animation:draw 1.4s ease forwards .2s"/>
+  </svg>`;
+}
+const styleDraw=document.createElement('style');styleDraw.textContent='@keyframes draw{to{stroke-dashoffset:0}}';document.head.appendChild(styleDraw);
+
+/* 面积折线图 */
+function areaChart(ai,human,labels){
+  const w=720,h=240,pad={l:34,r:14,t:18,b:28};
+  const iw=w-pad.l-pad.r, ih=h-pad.t-pad.b;
+  const all=ai.concat(human), max=Math.max(...all)*1.1, min=0;
+  const X=i=>pad.l+i/(ai.length-1)*iw;
+  const Y=v=>pad.t+ih-((v-min)/(max-min))*ih;
+  const path=arr=>`M`+arr.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' L');
+  const grid=[0,.25,.5,.75,1].map(g=>{const y=pad.t+ih*g;return `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="var(--border)" stroke-width="1"/>`+(g<.99?`<text x="${pad.l-8}" y="${y+4}" text-anchor="end" font-size="10" fill="var(--muted)">${Math.round(max*(1-g))}</text>`:'')}).join('');
+  const xl=labels.map((l,i)=>`<text x="${X(i)}" y="${h-8}" text-anchor="middle" font-size="10.5" fill="var(--muted)">${l}</text>`).join('');
+  const gid='ga'+Math.random().toString(36).slice(2,7);
+  return `<svg viewBox="0 0 ${w} ${h}" class="chart-area" style="height:240px">
+    <defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#165DFF" stop-opacity=".22"/><stop offset="1" stop-color="#165DFF" stop-opacity="0"/></linearGradient></defs>
+    ${grid}
+    <path d="${path(ai)} L${X(ai.length-1)},${pad.t+ih} L${X(0)},${pad.t+ih} Z" fill="url(#${gid})"/>
+    <path d="${path(ai)}" fill="none" stroke="#165DFF" stroke-width="2.6" stroke-linecap="round" pathLength="1000" class="adraw"/>
+    <path d="${path(human)}" fill="none" stroke="#00B42A" stroke-width="2.6" stroke-linecap="round" pathLength="1000" class="adraw" style="animation-delay:.15s"/>
+    ${xl}
+  </svg>`;
+}
+const styleDraw2=document.createElement('style');styleDraw2.textContent='.adraw{stroke-dasharray:1000;stroke-dashoffset:1000;animation:adraw 1.6s cubic-bezier(.22,1,.36,1) forwards}@keyframes adraw{to{stroke-dashoffset:0}}';document.head.appendChild(styleDraw2);
+
+/* 环形 */
+function donut(percent,color,size=104){
+  const r=size/2-10, c=2*Math.PI*r, off=c*(1-percent/100);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--chip)" stroke-width="11"/>
+    <circle id="dc" cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="11" stroke-linecap="round"
+      stroke-dasharray="${c}" stroke-dashoffset="${c}" transform="rotate(-90 ${size/2} ${size/2})"
+      style="transition:stroke-dashoffset 1.5s cubic-bezier(.22,1,.36,1)"/>
+    <text x="${size/2}" y="${size/2+6}" text-anchor="middle" font-size="22" font-weight="750" fill="var(--text)">${percent.toFixed(percent%1?1:0)}%</text>
+  </svg>`;
+}
+
+/* ===================== 渲染 ===================== */
+function render(){
+  const db=DATA.dashboard;
+  // KPI
+  $('#kpis').innerHTML=db.kpis.map((k,i)=>{
+    const up=k.delta>0, good=k.good?up:!up;
+    const cls=good?'up':'down'; const arrow=up?'▲':'▼';
+    return `<div class="panel kpi reveal" style="--i:${i+1}">
+      <div class="k-label">${k.label}</div>
+      <div class="k-val" data-v="${k.value}" data-d="${k.unit==='%'?1:0}" data-s="${k.unit}">0${k.unit}</div>
+      <span class="k-delta ${cls}">${arrow} ${Math.abs(k.delta)}%</span>
+      <div class="spark">${sparkSVG(k.spark,k.color)}</div>
+    </div>`;
+  }).join('');
+  // 数字滚动
+  $('#kpis').querySelectorAll('.k-val').forEach(el=>countUp(el,+el.dataset.v,1100,+el.dataset.d,el.dataset.s));
+
+  // 面积图
+  drawTrend(7);
+
+  // 环形
+  $('#donutAi').innerHTML=donut(db.kpis[2].value,'#165DFF');
+  $('#donutSat').innerHTML=donut(db.kpis[3].value,'#00B42A');
+  requestAnimationFrame(()=>{
+    const ai=db.kpis[2].value, sat=db.kpis[3].value;
+    setDonut('#donutAi',ai); setDonut('#donutSat',sat);
+    countUp($('#aiPct'),ai,1200,1,'%'); countUp($('#humanPct'),100-ai,1200,1,'%');
+    countUp($('#satVal'),sat,1200,1,'%'); countUp($('#firstResp'),db.kpis[1].value,1200,1,'s');
+  });
+
+  // 平台分布
+  const maxP=Math.max(...db.platformDist.map(p=>+p.value||0));
+  $('#platBars').innerHTML=db.platformDist.map((p,i)=>`
+    <div class="hbar reveal" style="--i:${8+i}">
+      <span class="name">${p.name}</span>
+      <span class="track"><span class="fill" data-w="${(+p.value/maxP*100).toFixed(1)}" style="background:${p.color}"></span></span>
+      <span class="val">${p.value}</span>
+    </div>`).join('');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    $('#platBars').querySelectorAll('.fill').forEach(f=>f.style.width=(f.dataset.w||0)+'%');
+  }));
+  // 店铺排行
+  const maxS=Math.max(...db.storeRanking.map(s=>s.sessions));
+  $('#storeBars').innerHTML=db.storeRanking.map((s,i)=>`
+    <div class="vbar reveal" style="--i:${9+i}">
+      <span class="col" style="--h:${(s.sessions/maxS*100).toFixed(1)}%"></span>
+      <span class="lab">${s.name}</span>
+    </div>`).join('');
+
+  // 售后
+  const a=db.afterSales;
+  const cards=[
+    {v:a.total,c:'#165DFF',d:'#165DFF',l:'售后工单总数'},
+    {v:a.pending,c:'#FF7D00',d:'#FF7D00',l:'待处理'},
+    {v:a.processing,c:'#722ED1',d:'#722ED1',l:'处理中'},
+    {v:a.done,c:'#00B42A',d:'#00B42A',l:'已完成'}
+  ];
+  $('#afterSales').innerHTML=cards.map((c,i)=>`<div class="panel stat reveal" style="--i:${12+i}">
+    <div class="s-val" data-v="${c.v}" style="color:${c.c}">0</div>
+    <div class="s-lab"><span class="dot" style="background:${c.d}"></span>${c.l}</div>
+  </div>`).join('');
+  $('#afterSales').querySelectorAll('.s-val').forEach(el=>countUp(el,+el.dataset.v,1100,0,''));
+  $('#footNote').textContent=`平均处理时长 ${a.avgHours}h · 退款率 ${a.refundRate}% · 数据来源：${LIVE?'本地服务实时接口 /api/bootstrap':'内置演示数据（离线）'}`;
+
+  // 来源标签
+  const t=$('#srcTag'); t.textContent=LIVE?'● 实时':'● 演示'; t.className='src-tag '+(LIVE?'src-live':'src-demo');
+}
+
+function setDonut(sel,pct){
+  const el=$(sel).querySelector('#dc'); if(!el)return;
+  const r=el.getAttribute('r'), c=2*Math.PI*r;
+  el.style.strokeDashoffset=c*(1-pct/100);
+}
+function drawTrend(range){
+  const db=DATA.dashboard;
+  const t=range===30?(db.trend30d||db.trend7d):db.trend7d;
+  $('#areaChart').innerHTML=areaChart(t.ai,t.human,t.labels);
+}
+
+/* ===================== 数据加载 ===================== */
+async function load(){
+  try{
+    const base=location.origin;
+    await fetch(base+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:'admin@xiaoman.ai',password:'xiaoman123'}),credentials:'include'});
+    const r=await fetch(base+'/api/bootstrap',{credentials:'include'});
+    if(!r.ok) throw 0;
+    const d=await r.json();
+    if(d.dashboard){
+      // 用真实数据覆盖演示数据
+      DATA={...DEMO, dashboard:{...DEMO.dashboard, ...d.dashboard}};
+      // 实时数据里店铺排行用的是 storeId，需从 stores 解析出店铺名
+      if(d.stores){
+        const map={}; d.stores.forEach(s=>map[s.id]=s.name);
+        if(DATA.dashboard.storeRanking){
+          DATA.dashboard.storeRanking=DATA.dashboard.storeRanking.map(s=>({...s,name:s.name||map[s.storeId]||s.storeId}));
+        }
+      }
+      LIVE=true;
+    }
+  }catch(e){ LIVE=false; }
+  render();
+}
+
+/* ===================== 命令面板 ===================== */
+const overlay=$('#overlay'), palInput=$('#palInput'), palList=$('#palList');
+const CMDS=[
+  {g:'动作',icon:'🌗',label:'切换到深色外观',run:()=>toggleTheme()},
+  {g:'动作',icon:'☀️',label:'切换到浅色外观',run:()=>{document.body.classList.remove('dark');}},
+  {g:'动作',icon:'🔄',label:'刷新数据',run:()=>load()},
+  {g:'导航',icon:'📊',label:'返回工作台(app.html)',run:()=>location.href='app.html'},
+  {g:'导航',icon:'💬',label:'打开会话聚合',run:()=>location.href='app.html'},
+];
+let sel=0, filtered=CMDS;
+function openPalette(){overlay.classList.add('show');palInput.value='';filterCmds('');setTimeout(()=>palInput.focus(),50);}
+function closePalette(){overlay.classList.remove('show');}
+function filterCmds(q){
+  filtered=CMDS.filter(c=>c.label.includes(q));
+  sel=0; renderCmds();
+}
+function renderCmds(){
+  if(!filtered.length){palList.innerHTML='<div class="pal-group">无匹配命令</div>';return;}
+  let html='',last='';
+  filtered.forEach((c,i)=>{
+    if(c.g!==last){html+=`<div class="pal-group">${c.g}</div>`;last=c.g;}
+    html+=`<div class="pal-item ${i===sel?'sel':''}" data-i="${i}"><div class="ic">${c.icon}</div>${c.label}<span class="arrow">→</span></div>`;
+  });
+  palList.innerHTML=html;
+  palList.querySelectorAll('.pal-item').forEach(el=>el.onclick=()=>run(+el.dataset.i));
+}
+function run(i){const c=filtered[i];if(c){closePalette();c.run();}}
+$('#openPalette').onclick=openPalette;
+overlay.onclick=e=>{if(e.target===overlay)closePalette();};
+palInput.oninput=e=>filterCmds(e.target.value);
+palInput.onkeydown=e=>{
+  if(e.key==='ArrowDown'){sel=Math.min(filtered.length-1,sel+1);renderCmds();e.preventDefault();}
+  if(e.key==='ArrowUp'){sel=Math.max(0,sel-1);renderCmds();e.preventDefault();}
+  if(e.key==='Enter'){run(sel);}
+  if(e.key==='Escape'){closePalette();}
+};
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPalette();}
+});
+function toggleTheme(){document.body.classList.toggle('dark');}
+
+/* 日期 */
+(function(){
+  const d=new Date(); const wk=['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][d.getDay()];
+  const h=d.getHours(); const g=h<11?'早上好':h<14?'中午好':h<18?'下午好':'晚上好';
+  $('#greet').textContent=`${g}，李展宇`;
+  $('#dateLine').textContent=`${d.getFullYear()} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日 · ${wk} · 系统运行概览、会话脉搏与今日接待轨迹。`;
+})();
+
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+/* ================================================================
+   小满AI · 登录 / 注册 页样式
+   ================================================================ */
+:root {
+  --primary: #165DFF;
+  --primary-600: #0E4BE8;
+  --primary-50: #E8F0FF;
+  --text: #1D2129;
+  --text-2: #4E5969;
+  --muted: #86909C;
+  --border: #E5E6EB;
+  --bg: #F7F8FA;
+  --danger: #F53F3F;
+  --success: #00B42A;
+  --radius: 12px;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  color: var(--text);
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+.auth-wrap { display: flex; min-height: 100vh; }
+
+/* ---------- 左侧品牌区 ---------- */
+.auth-brand {
+  position: relative;
+  flex: 1 1 46%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 44px 52px;
+  color: #fff;
+  background:
+    radial-gradient(1200px 600px at 10% 0%, rgba(54, 207, 201, .35), transparent 60%),
+    radial-gradient(900px 600px at 90% 100%, rgba(114, 46, 209, .38), transparent 55%),
+    linear-gradient(150deg, #0B3BC4 0%, #165DFF 52%, #2A7BFF 100%);
+  overflow: hidden;
+}
+.auth-brand::after {
+  content: "";
+  position: absolute; right: -80px; bottom: -120px;
+  width: 420px; height: 420px; border-radius: 50%;
+  background: rgba(255, 255, 255, .07);
+}
+.brand-logo { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 600; }
+.brand-logo .mark {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: rgba(255, 255, 255, .18);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; backdrop-filter: blur(6px);
+}
+.brand-main { position: relative; z-index: 1; }
+.brand-main h1 {
+  font-size: 34px; line-height: 1.32; margin: 0 0 14px; font-weight: 700; letter-spacing: .5px;
+}
+.brand-main p { margin: 0; font-size: 14.5px; line-height: 1.8; color: rgba(255, 255, 255, .82); max-width: 400px; }
+.brand-points { margin-top: 30px; display: flex; flex-direction: column; gap: 14px; }
+.brand-points .pt { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: rgba(255, 255, 255, .92); }
+.brand-points .pt i {
+  width: 26px; height: 26px; border-radius: 8px; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, .16); font-size: 12px;
+}
+.brand-foot { position: relative; z-index: 1; font-size: 12px; color: rgba(255, 255, 255, .6); }
+
+/* ---------- 右侧表单区 ---------- */
+.auth-form-side {
+  flex: 1 1 54%;
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 24px;
+  background: #fff;
+}
+.auth-card { width: 100%; max-width: 400px; }
+.auth-card h2 { margin: 0 0 6px; font-size: 24px; font-weight: 700; }
+.auth-card .sub { margin: 0 0 26px; font-size: 13.5px; color: var(--muted); }
+
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 13px; color: var(--text-2); margin-bottom: 7px; font-weight: 500; }
+.input-wrap { position: relative; }
+.input-wrap .lead {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: #B5B9C2; font-size: 14px; pointer-events: none;
+}
+.input-wrap input {
+  width: 100%; height: 44px; padding: 0 42px 0 36px;
+  border: 1px solid var(--border); border-radius: 10px;
+  font-size: 14px; color: var(--text); background: #fff;
+  transition: border-color .15s, box-shadow .15s;
+  font-family: inherit;
+}
+.input-wrap input::placeholder { color: #B5B9C2; }
+.input-wrap input:focus {
+  outline: none; border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(22, 93, 255, .12);
+}
+.input-wrap .eye {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  width: 32px; height: 32px; border: 0; background: transparent; cursor: pointer;
+  color: #B5B9C2; border-radius: 8px;
+}
+.input-wrap .eye:hover { color: var(--text-2); background: var(--bg); }
+
+.btn-main {
+  width: 100%; height: 44px; border: 0; border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary), #3A7BFF);
+  color: #fff; font-size: 14.5px; font-weight: 600; cursor: pointer;
+  transition: opacity .15s, transform .05s; font-family: inherit;
+  margin-top: 4px;
+}
+.btn-main:hover { opacity: .94; }
+.btn-main:active { transform: translateY(1px); }
+.btn-main:disabled { opacity: .6; cursor: not-allowed; }
+
+.msg { min-height: 20px; margin: 12px 0 4px; font-size: 13px; }
+.msg.err { color: var(--danger); }
+.msg.ok { color: var(--success); }
+
+.auth-alt { margin-top: 18px; font-size: 13px; color: var(--muted); text-align: center; }
+.auth-alt a { color: var(--primary); text-decoration: none; font-weight: 500; }
+.auth-alt a:hover { text-decoration: underline; }
+
+.divider { display: flex; align-items: center; gap: 10px; margin: 22px 0 16px; color: var(--muted); font-size: 12px; }
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+.demo-box {
+  border: 1px dashed #C9D6F5; background: #F5F8FF;
+  border-radius: 10px; padding: 12px 14px; font-size: 12.5px; color: var(--text-2); line-height: 1.9;
+}
+.demo-box b { color: var(--primary); }
+.demo-box .fill {
+  border: 0; background: transparent; color: var(--primary);
+  font-size: 12.5px; cursor: pointer; text-decoration: underline; padding: 0; font-family: inherit;
+}
+
+.agree { display: flex; gap: 8px; align-items: flex-start; font-size: 12.5px; color: var(--muted); margin: 4px 0 2px; }
+.agree input { margin-top: 3px; }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 900px) {
+  .auth-brand { display: none; }
+  .auth-form-side { padding: 28px 20px; background: #fff; }
+  .auth-card { max-width: 420px; }
+  .auth-form-side::before {
+    content: "小满AI · 电商客服工作台";
+    position: fixed; top: 18px; left: 0; right: 0;
+    text-align: center; font-size: 13px; color: var(--muted); letter-spacing: .5px;
+  }
+}
+
+/* ==================================================================
+   登录 / 注册 · 视频级动效（光斑漂浮 + 弹性错峰入场）
+   ================================================================== */
+@keyframes auPop {
+  0%   { opacity: 0; transform: translateY(24px) scale(.96); }
+  60%  { opacity: 1; transform: translateY(-3px) scale(1.006); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes auFadeDown {
+  0%   { opacity: 0; transform: translateY(-14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes auFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(36px, -28px) scale(1.12); }
+}
+@keyframes auFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-30px, 24px) scale(1.08); }
+}
+
+/* 左侧漂浮光斑 */
+.auth-brand .blob {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  filter: blur(10px); z-index: 0;
+}
+.auth-brand .blob-a {
+  width: 300px; height: 300px; left: -70px; top: 16%;
+  background: radial-gradient(circle, rgba(54, 207, 201, .4), transparent 68%);
+  animation: auFloat 9s ease-in-out infinite;
+}
+.auth-brand .blob-b {
+  width: 340px; height: 340px; right: -90px; bottom: 6%;
+  background: radial-gradient(circle, rgba(114, 46, 209, .42), transparent 68%);
+  animation: auFloat2 11s ease-in-out infinite;
+}
+.brand-logo, .brand-main, .brand-foot { position: relative; z-index: 1; }
+
+/* 左侧内容错峰入场 */
+.auth-brand .brand-logo { animation: auFadeDown .6s cubic-bezier(.22, 1, .36, 1) backwards; }
+.auth-brand .brand-main h1 { animation: auPop .75s cubic-bezier(.22, 1, .36, 1) .12s backwards; }
+.auth-brand .brand-main p  { animation: auPop .75s cubic-bezier(.22, 1, .36, 1) .22s backwards; }
+.auth-brand .brand-points .pt:nth-child(1) { animation: auPop .7s cubic-bezier(.22, 1, .36, 1) .32s backwards; }
+.auth-brand .brand-points .pt:nth-child(2) { animation: auPop .7s cubic-bezier(.22, 1, .36, 1) .42s backwards; }
+.auth-brand .brand-points .pt:nth-child(3) { animation: auPop .7s cubic-bezier(.22, 1, .36, 1) .52s backwards; }
+.auth-brand .brand-foot { animation: auFadeDown .8s ease .7s both; }
+
+/* 右侧表单弹性入场 */
+.auth-card > * { will-change: transform, opacity; }
+.auth-card h2        { animation: auPop .7s cubic-bezier(.22, 1, .36, 1) .1s backwards; }
+.auth-card .sub      { animation: auPop .7s cubic-bezier(.22, 1, .36, 1) .18s backwards; }
+.auth-card .field:nth-of-type(1) { animation: auPop .7s cubic-bezier(.22, 1, .36, 1) .26s backwards; }
+.auth-card .field:nth-of-type(2) { animation: auPop .7s cubic-bezier(.22, 1, .36, 1) .34s backwards; }
+.auth-card .btn-main { animation: auPop .7s cubic-bezier(.22, 1, .36, 1) .42s backwards; }
+.auth-card .auth-alt { animation: auPop .7s cubic-bezier(.22, 1, .36, 1) .5s backwards; }
+.auth-card .divider  { animation: auPop .7s cubic-bezier(.22, 1, .36, 1) .56s backwards; }
+.auth-card .demo-box { animation: auPop .7s cubic-bezier(.22, 1, .36, 1) .62s backwards; }
+.auth-card .msg      { animation: auFadeDown .4s ease .5s both; }
+
+/* 登录按钮质感增强 */
+.btn-main {
+  box-shadow: 0 10px 24px rgba(22, 93, 255, .26);
+  transition: opacity .15s, transform .18s cubic-bezier(.22, 1, .36, 1), box-shadow .18s;
+}
+.btn-main:hover { transform: translateY(-1px); box-shadow: 0 14px 30px rgba(22, 93, 255, .34); opacity: 1; }
+.btn-main:disabled { transform: none; box-shadow: none; }
+
+/* 输入框聚焦微弹 */
+.input-wrap input { transition: border-color .18s, box-shadow .18s, transform .18s cubic-bezier(.22, 1, .36, 1); }
+.input-wrap input:focus { transform: translateY(-1px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-brand .blob, .auth-brand .brand-logo, .auth-brand .brand-main h1,
+  .auth-brand .brand-main p, .auth-brand .brand-points .pt, .auth-brand .brand-foot,
+  .auth-card > * {
+    animation: none !important;
+  }
+}

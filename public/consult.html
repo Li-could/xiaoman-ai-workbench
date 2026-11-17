@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>在线咨询</title>
+<link rel="stylesheet" href="/css/consult.css" />
+</head>
+<body>
+<div class="chat" id="app">
+  <header class="chat-hd">
+    <div class="avatar" id="shopShort">店</div>
+    <div class="meta">
+      <div class="name" id="shopName">加载中…</div>
+      <div class="sub" id="shopSub"><span class="dot"></span>在线，通常几分钟内回复</div>
+    </div>
+    <a class="back" href="javascript:history.back()">关闭</a>
+  </header>
+
+  <div class="tips" id="welcome"></div>
+
+  <main class="chat-bd" id="scroller">
+    <div class="msgs" id="msgs"></div>
+  </main>
+
+  <footer class="chat-ft">
+    <input id="nick" class="nick" type="text" placeholder="怎么称呼您" maxlength="20" />
+    <div class="row">
+      <textarea id="input" rows="1" placeholder="请输入您的问题…" maxlength="500"></textarea>
+      <button id="send" class="send">发送</button>
+    </div>
+    <div class="hint" id="hint">消息将实时送达店铺客服工作台</div>
+  </footer>
+</div>
+
+<script src="/js/consult.js"></script>
+</body>
+</html>

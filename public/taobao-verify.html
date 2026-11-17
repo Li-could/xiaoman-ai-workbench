@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>淘宝开放平台 · 凭据验证</title>
+<style>
+  :root { --bg:#f5f6f8; --card:#fff; --line:#e5e7eb; --primary:#ff5000; --ok:#16a34a; --err:#dc2626; --txt:#1f2329; --sub:#6b7280; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--txt); padding:32px 16px; }
+  .wrap { max-width:560px; margin:0 auto; }
+  h1 { font-size:20px; margin:0 0 4px; }
+  .desc { color:var(--sub); font-size:13px; line-height:1.6; margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+  label { display:block; font-size:13px; font-weight:600; margin:16px 0 6px; }
+  label:first-of-type { margin-top:0; }
+  input, select { width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:8px; font-size:14px; outline:none; transition:border-color .15s; }
+  input:focus, select:focus { border-color:var(--primary); }
+  .row { display:flex; align-items:center; gap:8px; }
+  .toggle { font-size:12px; color:var(--primary); cursor:pointer; user-select:none; white-space:nowrap; }
+  button { margin-top:22px; width:100%; padding:12px; background:var(--primary); color:#fff; border:none; border-radius:8px; font-size:15px; font-weight:600; cursor:pointer; }
+  button:disabled { opacity:.6; cursor:not-allowed; }
+  .result { margin-top:20px; border-radius:10px; padding:14px 16px; font-size:13px; line-height:1.7; display:none; }
+  .result.ok { display:block; background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; }
+  .result.err { display:block; background:#fef2f2; border:1px solid #fecaca; color:#991b1b; }
+  .result pre { margin:8px 0 0; white-space:pre-wrap; word-break:break-all; font-size:12px; color:#374151; background:#fff; border:1px solid var(--line); border-radius:6px; padding:10px; }
+  .status { font-size:12px; margin-bottom:14px; padding:6px 10px; border-radius:6px; display:inline-block; }
+  .status.in { background:#fef3c7; color:#92400e; }
+  .status.out { background:#fee2e2; color:#991b1b; }
+  .status.ok { background:#dcfce7; color:#166534; }
+  .hint { font-size:12px; color:var(--sub); margin-top:10px; line-height:1.6; }
+  code { background:#eef0f3; padding:1px 5px; border-radius:4px; font-size:12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>淘宝开放平台 · 凭据验证</h1>
+  <p class="desc">把你开放平台应用里的 <b>AppKey</b> 和 <b>AppSecret</b> 粘贴进来，点「验证凭据」即可测试与淘宝网关的连通性。该接口调用公开的 <code>taobao.time.get</code>，<b>无需完成店铺授权</b>就能验证 AppKey + AppSecret + 签名是否一致。</p>
+
+  <div class="card">
+    <div id="loginStatus"></div>
+
+    <label>AppKey（必填）</label>
+    <input id="appKey" type="text" placeholder="开放平台应用 AppKey" autocomplete="off" />
+
+    <label>AppSecret（必填）</label>
+    <div class="row">
+      <input id="appSecret" type="password" placeholder="应用密钥" autocomplete="off" style="flex:1" />
+      <span class="toggle" id="toggleSecret">显示</span>
+    </div>
+
+    <label>运行环境</label>
+    <select id="env">
+      <option value="sandbox">沙箱环境（gw.api.tbsandbox.com）</option>
+      <option value="prod">正式环境（eco.taobao.com）</option>
+    </select>
+
+    <button id="btn" onclick="runProbe()">验证凭据</button>
+
+    <div id="result" class="result"></div>
+
+    <p class="hint">验证通过后，去工作台「设置 → 淘宝/天猫接入」粘贴同样的值，点「保存并去授权」即可把真实店铺接进工作台。</p>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+// 先确认登录态（探测接口需要工作台会话）
+fetch('/api/stores', { credentials:'same-origin' })
+  .then(r => {
+    const el = $('loginStatus');
+    if (r.ok) { el.className='status ok'; el.textContent='✓ 已登录工作台，可直接验证'; }
+    else { el.className='status out'; el.innerHTML='✗ 未登录：请先打开 <a href="/app" target="_blank">http://127.0.0.1:8787/app</a> 登录（admin / xiaoman123），再回来验证'; }
+  })
+  .catch(() => { const el=$('loginStatus'); el.className='status out'; el.textContent='无法连接本地服务，请确认工作台已启动（127.0.0.1:8787）'; });
+
+$('toggleSecret').onclick = () => {
+  const i = $('appSecret');
+  i.type = i.type === 'password' ? 'text' : 'password';
+  $('toggleSecret').textContent = i.type === 'password' ? '显示' : '隐藏';
+};
+
+async function runProbe() {
+  const appKey = $('appKey').value.trim();
+  const appSecret = $('appSecret').value.trim();
+  const env = $('env').value;
+  const box = $('result');
+  if (!appKey || !appSecret) { box.className='result err'; box.innerHTML='请先填写 AppKey 和 AppSecret。'; return; }
+
+  const btn = $('btn'); btn.disabled = true; btn.textContent = '验证中…';
+  box.className = 'result';
+
+  try {
+    const res = await fetch('/api/connectors/taobao/probe', {
+      method:'POST',
+      credentials:'same-origin',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ appKey, appSecret, env })
+    });
+    const data = await res.json();
+    if (res.ok && data.ok) {
+      box.className = 'result ok';
+      box.innerHTML = '✓ 验证成功，凭据有效！<pre>' +
+        '淘宝服务器时间：' + (data.probe?.time || '-') + '\n' +
+        '往返耗时：' + (data.probe?.ms ?? '-') + ' ms\n' +
+        '环境：' + (env === 'sandbox' ? '沙箱' : '正式') + '\n\n' +
+        (data.note || '') + '</pre>';
+    } else {
+      const e = (data.errors && data.errors[0]) || {};
+      box.className = 'result err';
+      box.innerHTML = '✗ 验证失败：' + (data.error || data.message || '未知错误') + '<pre>' +
+        '错误码：' + (e.code || '-') + '\n' +
+        '子错误：' + (e.sub_code || '-') + '\n' +
+        '提示：' + (e.hint || data.note || '-') + '</pre>';
+    }
+  } catch (err) {
+    box.className = 'result err';
+    box.innerHTML = '请求异常：' + err.message + '<br><span class="hint">请确认工作台服务在 127.0.0.1:8787 运行且已登录。</span>';
+  } finally {
+    btn.disabled = false; btn.textContent = '验证凭据';
+  }
+}
+</script>
+</body>
+</html>

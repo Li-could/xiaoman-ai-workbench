@@ -1,0 +1,23 @@
+# 依赖
+node_modules/
+
+# 本地配置（含数据库密码 / API Key，切勿提交）
+.env
+config.json
+
+# 运行时生成的兜底数据库
+data/
+
+# Python / IDE
+__pycache__/
+*.pyc
+.idea/
+.venv/
+venv/
+
+# 日志
+*.log
+
+# 系统
+.DS_Store
+Thumbs.db

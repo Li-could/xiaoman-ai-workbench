@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>模拟多多客服页面（用于验证读取逻辑）</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 13px/1.6 -apple-system, "Microsoft YaHei", sans-serif; background: #f5f6f7; height: 100vh; display: flex; }
+  .left { width: 220px; border-right: 1px solid #e5e6eb; background: #fff; overflow-y: auto; }
+  .tabs { display: flex; gap: 6px; padding: 8px; border-bottom: 1px solid #eee; }
+  .tab { padding: 3px 8px; border-radius: 10px; background: #f2f3f5; color: #666; font-size: 12px; }
+  .tab.on { background: #e02e24; color: #fff; }
+  .item { padding: 10px; border-bottom: 1px solid #f5f5f5; }
+  .item .n { font-weight: 600; }
+  .item .p { color: #999; font-size: 12px; }
+  .item.active { background: #fff4f3; border-left: 3px solid #e02e24; }
+  .mid { flex: 1; display: flex; flex-direction: column; background: #fff; }
+  .head { height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-bottom: 1px solid #eee; font-weight: 600; }
+  .msgs { flex: 1; overflow-y: auto; padding: 14px; background: #fafafa; }
+  .timebar { text-align: center; color: #b0b3b8; font-size: 12px; margin: 10px 0; }
+  .sysbar { text-align: center; color: #8a8f99; font-size: 12px; margin: 10px 0; }
+  .row { display: flex; align-items: flex-start; gap: 8px; margin: 10px 0; }
+  .row.right { justify-content: flex-end; }
+  .av { width: 30px; height: 30px; border-radius: 4px; background: #d9dce1; flex: none; }
+  .bubble { max-width: 320px; padding: 8px 10px; border-radius: 8px; background: #fff; border: 1px solid #ebedf0; }
+  .row.right .bubble { background: #ffece8; border-color: #ffd6ce; }
+  .imgbox { width: 120px; height: 90px; background: #cfd4da; border-radius: 6px; }
+  .editor { border-top: 1px solid #eee; padding: 10px 14px; display: flex; gap: 10px; align-items: flex-end; }
+  .input { flex: 1; min-height: 40px; border: 1px solid #e5e6eb; border-radius: 6px; padding: 8px; outline: none; }
+  .send { background: #165dff; color: #fff; border: 0; border-radius: 6px; padding: 9px 18px; }
+  .right2 { width: 220px; border-left: 1px solid #e5e6eb; background: #fff; overflow-y: auto; padding: 10px; }
+  .right2 .t { font-weight: 600; margin-bottom: 8px; }
+  .right2 .o { color: #999; font-size: 12px; }
+  #out { position: fixed; right: 8px; bottom: 8px; width: 420px; max-height: 46vh; overflow: auto; background: #101418; color: #7ee787; font: 11px/1.5 Consolas, monospace; padding: 10px; border-radius: 8px; white-space: pre-wrap; z-index: 99; }
+</style>
+</head>
+<body>
+  <div class="left">
+    <div class="tabs"><span class="tab on">全部 11</span><span class="tab">未读</span><span class="tab">拼多多 0</span></div>
+    <div class="item"><div class="n">福***哥</div><div class="p">明天能发吗</div></div>
+    <div class="item active"><div class="n">游客</div><div class="p">这个怎么用？一瓶兑多少水</div></div>
+    <div class="item"><div class="n">花***开</div><div class="p">在吗</div></div>
+  </div>
+
+  <div class="mid">
+    <div class="head"><span>游客</span><span style="color:#e02e24;font-size:12px">拼多多</span></div>
+    <div class="msgs" id="msgs">
+      <div class="timebar">10-25 20:18:57</div>
+      <div class="row">
+        <div class="av"></div>
+        <div class="bubble">老板在吗？我买的除草剂到了</div>
+      </div>
+      <div class="row right">
+        <div class="bubble">在的哦，亲</div>
+        <div class="av"></div>
+      </div>
+      <div class="timebar">10-25 20:19:30</div>
+      <div class="row">
+        <div class="av"></div>
+        <div class="bubble">一瓶兑多少水啊</div>
+      </div>
+      <div class="row">
+        <div class="av"></div>
+        <div class="imgbox"></div>
+      </div>
+      <div class="row right">
+        <div class="bubble">一瓶兑水30斤，喷叶面就行</div>
+        <div class="av"></div>
+      </div>
+      <div class="sysbar">以上是历史消息</div>
+      <div class="row">
+        <div class="av"></div>
+        <div class="bubble">好的，那我今天下午就打</div>
+      </div>
+    </div>
+    <div class="editor">
+      <div class="input" contenteditable="true">请输入内容</div>
+      <button class="send">发送</button>
+    </div>
+  </div>
+
+  <div class="right2">
+    <div class="t">个人订单</div>
+    <div class="o">没有相关订单</div>
+  </div>
+
+<div id="out">读取中…</div>
+<script>
+/* ===== 以下函数从 extension/content.js 原样复制，用于验证读取逻辑 ===== */
+var TAG = '[xm]';
+var TIME_BAR = /^(?:(?:20\d{2})[-/年])?(?:今天|昨天|前天)?\s*(?:\d{1,2}[-/月]\d{1,2}日?)?\s*\d{1,2}:\d{2}(?::\d{2})?$/;
+var SYSTEM_ACCOUNTS = /(共享仓|流量数据|包裹中心)/;
+function textOf(el) { return ((el && el.innerText) || '').trim(); }
+function isUiLabel(n) { return /^(全部|未读|店铺动态|营销推广|平台动态)$/.test(String(n || '').trim()); }
+function isScrollable(el) {
+  try {
+    var st = getComputedStyle(el);
+    if (!/(auto|scroll|overlay)/.test(st.overflowY)) return false;
+    return el.clientHeight > 150 && el.clientWidth > 200;
+  } catch (e) { return false; }
+}
+function textLeaves(root, limit) {
+  var out = [];
+  if (!root) return out;
+  var w;
+  try { w = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT); } catch (e) { return out; }
+  var el;
+  while ((el = w.nextNode())) {
+    if (el.children.length) continue;
+    var t = (el.textContent || '').trim();
+    if (!t) continue;
+    var r = el.getBoundingClientRect();
+    if (r.width < 4 || r.height < 4) continue;
+    out.push({ el: el, text: t });
+    if (out.length >= (limit || 800)) break;
+  }
+  return out;
+}
+function inputBox() {
+  var eds = [];
+  try { eds = Array.from(document.querySelectorAll('textarea, [contenteditable="true"]')); } catch (e) { return null; }
+  var best = null, bestA = 0;
+  for (var i = 0; i < eds.length; i++) {
+    var el = eds[i];
+    var r = el.getBoundingClientRect();
+    if (r.width < 80 || r.height < 16) continue;
+    if (r.top < 0 || r.left < 0 || r.top > innerHeight) continue;
+    var a = r.width * r.height;
+    if (a > bestA) { bestA = a; best = el; }
+  }
+  return best;
+}
+function bestScroller(root) {
+  var cand = null, bestN = 0, list = [];
+  try { list = Array.from(root.querySelectorAll('div,ul,section,main')); } catch (e) { return null; }
+  for (var i = 0; i < list.length; i++) {
+    var el = list[i];
+    if (!isScrollable(el)) continue;
+    var n = textLeaves(el, 300).length;
+    if (n > bestN) { bestN = n; cand = el; }
+  }
+  return cand && bestN >= 2 ? cand : null;
+}
+function findChatPanel() {
+  var inp = inputBox(), node = inp;
+  for (var i = 0; i < 7 && node && node !== document.body; i++) {
+    var c = bestScroller(node);
+    if (c) return c;
+    node = node.parentElement;
+  }
+  var cand = null, best = -1e9, all = [];
+  try { all = Array.from(document.querySelectorAll('div,ul,section')); } catch (e) { return null; }
+  for (var j = 0; j < all.length; j++) {
+    var el = all[j];
+    if (!isScrollable(el)) continue;
+    var r = el.getBoundingClientRect();
+    if (r.width < 260 || r.height < 200) continue;
+    var n = textLeaves(el, 300).length;
+    var cen = r.left + r.width / 2;
+    var score = n * 10 - Math.abs(cen - innerWidth / 2) / 6;
+    if (score > best) { best = score; cand = el; }
+  }
+  return cand;
+}
+function bubbleOf(leafEl, panel, pr) {
+  var el = leafEl;
+  for (var i = 0; i < 8; i++) {
+    var p = el.parentElement;
+    if (!p || p === panel || p === document.body) break;
+    var pw = p.getBoundingClientRect().width;
+    if (pw > pr.width * 0.92) break;
+    el = p;
+  }
+  return el;
+}
+function rowOfBubble(bubble, panel, pr) {
+  var el = bubble;
+  for (var i = 0; i < 6; i++) {
+    var p = el.parentElement;
+    if (!p || p === panel || p === document.body) break;
+    el = p;
+    if (el.getBoundingClientRect().width >= pr.width * 0.9) break;
+  }
+  return el;
+}
+function classifyRow(row, bubble, pr, text) {
+  var av = null;
+  try {
+    var kids = Array.from(row.querySelectorAll('*'));
+    for (var i = 0; i < kids.length; i++) {
+      var r = kids[i].getBoundingClientRect();
+      if (r.width >= 18 && r.width <= 58 && r.height >= 18 && r.height <= 58) {
+        if (Math.abs(r.width - r.height) <= 14) { av = r; break; }
+      }
+    }
+  } catch (e) {}
+  if (av) {
+    var ac = av.left + av.width / 2;
+    var pc = pr.left + pr.width / 2;
+    if (ac < pc - 8) return 'customer';
+    if (ac > pc + 8) return 'agent';
+  }
+  var br = bubble.getBoundingClientRect();
+  var lg = br.left - pr.left;
+  var rg = pr.right - br.right;
+  if (lg + 8 < rg) return 'customer';
+  if (rg + 8 < lg) return 'agent';
+  return text.length <= 40 ? 'system' : 'customer';
+}
+function readLiveThread() {
+  var panel = findChatPanel();
+  if (!panel) return { ok: false, error: '没找到聊天消息区', msgs: [], name: '' };
+  var pr = panel.getBoundingClientRect();
+  if (pr.width < 200 || pr.height < 120) return { ok: false, error: '聊天区太小', msgs: [], name: '' };
+  var cx = pr.left + pr.width / 2;
+  var leaves = textLeaves(panel, 700);
+  var rows = [], curTime = '';
+  for (var i = 0; i < leaves.length; i++) {
+    var lf = leaves[i];
+    var t = lf.text.replace(/\s+/g, ' ').trim();
+    if (t.length <= 24 && TIME_BAR.test(t)) { curTime = t; continue; }
+    var bubble = bubbleOf(lf.el, panel, pr);
+    var br = bubble.getBoundingClientRect();
+    if (br.height < 8 || br.width < 8) continue;
+    var row = rowOfBubble(bubble, panel, pr);
+    var role = (row === bubble) ? classifyRow(row, bubble, pr, t) : classifyRow(row, bubble, pr, t);
+    rows.push({ top: br.top, role: role, kind: 'text', text: t, time: curTime, _n: rows.length });
+  }
+  try {
+    Array.from(panel.querySelectorAll('img')).forEach(function (img) {
+      var r = img.getBoundingClientRect();
+      var src = img.getAttribute('src') || img.getAttribute('data-src') || '';
+      if (!src || !/^https?:\/\//.test(src)) return;
+      if (r.width < 60 || r.height < 50) return;
+      var row = rowOfBubble(img, panel, pr);
+      rows.push({ top: r.top, role: classifyRow(row, img, pr, 'x'), kind: 'image', text: '[图片]', url: src, time: curTime, _n: rows.length });
+    });
+  } catch (e) {}
+  rows.sort(function (a, b) { return (a.top - b.top) || (a._n - b._n); });
+  var msgs = [], prev = null;
+  for (var k = 0; k < rows.length; k++) {
+    var r2 = rows[k];
+    var key = r2.role + '|' + r2.kind + '|' + r2.text;
+    if (prev && prev.key === key) continue;
+    prev = { key: key };
+    msgs.push({ role: r2.role, kind: r2.kind, text: r2.text, url: r2.url || '', time: r2.time || '' });
+  }
+  return { ok: true, msgs: msgs, count: msgs.length, panel: { w: Math.round(pr.width), h: Math.round(pr.height) } };
+}
+var lastActiveName = '';
+function activeBuyerName() {
+  var found = '';
+  try {
+    var els = Array.from(document.querySelectorAll('[class*="active"],[class*="selected"],[class*="current"],[class*="checked"]'));
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      var r = el.getBoundingClientRect();
+      if (r.height < 18 || r.height > 140) continue;
+      if (r.width < 40 || r.width > 400) continue;
+      if (r.left > innerWidth * 0.55) continue;
+      var t = textOf(el);
+      if (!t) continue;
+      var first = t.split(/\n+/)[0].trim();
+      if (!first || first.length > 20) continue;
+      if (/^\d+$/.test(first)) continue;
+      if (/[:：]/.test(first)) continue;
+      if (isUiLabel(first) || SYSTEM_ACCOUNTS.test(first)) continue;
+      found = first;
+      break;
+    }
+  } catch (e) {}
+  if (found) { lastActiveName = found; return found; }
+  return lastActiveName;
+}
+
+/* ===== 输出结果 ===== */
+var out = document.getElementById('out');
+var r = readLiveThread();
+var name = activeBuyerName();
+var lines = [];
+lines.push('客户名: ' + (name || '(未识别)'));
+lines.push('面板: ' + (r.panel ? r.panel.w + 'x' + r.panel.h : '-') + '  消息数: ' + (r.count || 0));
+if (!r.ok) lines.push('错误: ' + r.error);
+(r.msgs || []).forEach(function (m, i) {
+  lines.push('  ' + i + ' [' + m.role + '] ' + m.kind + ' ' + (m.time ? '(' + m.time + ') ' : '') + m.text.slice(0, 40));
+});
+var cus = (r.msgs || []).filter(function (m) { return m.role === 'customer'; });
+var age = (r.msgs || []).filter(function (m) { return m.role === 'agent'; });
+lines.push('---- 判定 ----');
+lines.push('客户消息 ' + cus.length + ' 条 / 我方言 ' + age.length + ' 条 / 系统 ' + ((r.msgs || []).length - cus.length - age.length) + ' 条');
+lines.push(cus.length >= 3 && age.length >= 2 ? '结果: PASS ✅' : '结果: FAIL ❌');
+out.textContent = lines.join('\n');
+</script>
+</body>
+</html>

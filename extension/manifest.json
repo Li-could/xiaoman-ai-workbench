@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "小满消息桥",
+  "version": "1.7.0",
+  "description": "在本机浏览器登录店铺后台（拼多多 / 千牛 / 抖店等）后，实时把客户发来的消息推送到小满客服工作台，无需开放平台 API。",
+  "permissions": [
+    "storage",
+    "alarms"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "小满消息桥"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://mms.pinduoduo.com/*",
+        "*://*.pinduoduo.com/*",
+        "*://*.yangkeduo.com/*",
+        "*://qn.taobao.com/*",
+        "*://myseller.taobao.com/*",
+        "*://*.taobao.com/*",
+        "*://*.tmall.com/*",
+        "*://*.jd.com/*",
+        "*://*.kuaishou.com/*",
+        "*://*.douyin.com/*",
+        "*://fxg.jinritemai.com/*",
+        "*://*.weixin.qq.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_idle"
+    }
+  ]
+}

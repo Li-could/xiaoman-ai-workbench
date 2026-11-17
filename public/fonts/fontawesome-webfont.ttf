@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智客AI - 电商AI客服聚合平台 | 一站式管理全平台客服</title>
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/font-awesome/css/all.min.css">
+    <script src="/chart.umd.min.js"></script>
+    <link href="/fonts/inter.css" rel="stylesheet">
+<meta name="description" content="智客AI是电商AI客服聚合平台，一个窗口管理淘宝、天猫、京东、拼多多、抖音、快手、视频号、小红书全平台店铺咨询，AI自动处理80%常见问题，3分钟极速上线，支持免费试用。">
+    <link rel="canonical" href="https://zhikest.cn/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="智客AI">
+    <meta property="og:title" content="智客AI - 电商AI客服聚合平台 | 一站式管理全平台客服">
+    <meta property="og:description" content="智客AI是电商AI客服聚合平台，一个窗口管理淘宝、天猫、京东、拼多多、抖音、快手、视频号、小红书全平台店铺咨询，AI自动处理80%常见问题，3分钟极速上线，支持免费试用。">
+    <meta property="og:url" content="https://zhikest.cn/">
+    <meta property="og:image" content="https://zhikest.cn/logo.png">
+    <meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="font-inter bg-light text-dark antialiased">
+    <!-- 导航栏将通过JavaScript加载 -->
+    <div id="header-container">
+<header id="navbar" class="bg-white/95 backdrop-blur-sm shadow-sm fixed top-0 left-0 right-0 z-50 transition-all duration-300 transform translate-y-0">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-3">
+            <div class="flex items-center space-x-2">
+                <img src="/logo.png" alt="智客AI" class="w-10 h-10 rounded-lg object-cover shadow-sm transition-transform hover:scale-105">
+                <span class="text-xl font-bold text-primary">智客AI</span>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="/index.html" class="text-gray-700 hover:text-primary font-medium transition-all duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 hover:after:w-full">功能</a>
+                <a href="/index.html#demo" class="text-gray-700 hover:text-primary font-medium transition-all duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 hover:after:w-full">演示</a>
+                <a href="/index.html#brands" class="text-gray-700 hover:text-primary font-medium transition-all duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 hover:after:w-full">合作品牌</a>
+                <a href="/index.html#testimonials" class="text-gray-700 hover:text-primary font-medium transition-all duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 hover:after:w-full">案例</a>
+                <a href="/download.html" class="text-gray-700 hover:text-primary font-medium transition-all duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 hover:after:w-full">下载</a>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="/trial.html" class="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-white px-5 py-2.5 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-primary/20 transform hover:-translate-y-0.5">预约试用</a>
+            </div>
+            
+            <!-- 移动端菜单按钮 -->
+            <button class="md:hidden text-gray-700 focus:outline-none transition-transform hover:scale-110" id="menuBtn">
+                <i class="fa fa-bars text-xl"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- 移动端导航菜单 -->
+    <div class="md:hidden hidden bg-white border-t shadow-lg transform transition-all duration-300 ease-in-out opacity-0 translate-y-[-10px]" id="mobileMenu">
+        <div class="container mx-auto px-4 py-3 space-y-3">
+            <a href="/index.html" class="block py-3 text-gray-700 hover:text-primary font-medium transition-all duration-300 px-2 rounded-lg hover:bg-primary/5">功能</a>
+            <a href="/index.html#demo" class="block py-3 text-gray-700 hover:text-primary font-medium transition-all duration-300 px-2 rounded-lg hover:bg-primary/5">演示</a>
+            <a href="/index.html#brands" class="block py-3 text-gray-700 hover:text-primary font-medium transition-all duration-300 px-2 rounded-lg hover:bg-primary/5">合作品牌</a>
+            <a href="/index.html#testimonials" class="block py-3 text-gray-700 hover:text-primary font-medium transition-all duration-300 px-2 rounded-lg hover:bg-primary/5">案例</a>
+            <a href="/download.html" class="block py-3 text-gray-700 hover:text-primary font-medium transition-all duration-300 px-2 rounded-lg hover:bg-primary/5">下载</a>
+            <div class="flex flex-col space-y-3 pt-3 border-t">
+                <a href="/trial.html" class="text-primary hover:text-primary/80 font-medium transition-all duration-300 text-center py-2">预约试用</a>
+                <a href="/trial.html" class="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-white px-5 py-3 rounded-lg transition-all duration-300 text-center shadow-md hover:shadow-lg">立即预约</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<script>
+    // 立即执行函数，确保代码能够立即运行
+    (function() {
+        if (window.__zkHeaderReady) return;
+        window.__zkHeaderReady = true;
+        // 移动端菜单切换
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', function() {
+                if (mobileMenu.classList.contains('hidden')) {
+                    // 显示菜单时的动画
+                    mobileMenu.classList.remove('hidden', 'opacity-0', 'translate-y-[-10px]');
+                    mobileMenu.classList.add('opacity-100', 'translate-y-0');
+                } else {
+                    // 隐藏菜单时的动画
+                    mobileMenu.classList.add('opacity-0', 'translate-y-[-10px]');
+                    setTimeout(() => {
+                        mobileMenu.classList.add('hidden');
+                    }, 300);
+                }
+            });
+        }
+        
+        // 导航栏滚动显示/隐藏功能
+        const navbar = document.getElementById('navbar');
+        let lastScrollY = 0;
+        let scrollThreshold = 50; // 滚动阈值
+        let hidden = false;
+        
+        // 简单直接的滚动监听
+        window.addEventListener('scroll', function() {
+            const currentScrollY = window.scrollY;
+            
+            // 导航栏样式变化
+            if (currentScrollY > 50) {
+                navbar.classList.add('py-2', 'shadow-md');
+                navbar.classList.remove('py-3', 'shadow-sm');
+            } else {
+                navbar.classList.add('py-3', 'shadow-sm');
+                navbar.classList.remove('py-2', 'shadow-md');
+            }
+            
+            // 核心功能：向上滚动显示导航栏，向下滚动隐藏导航栏
+            if (currentScrollY > 100) { // 只在页面滚动一定距离后才触发
+                if (currentScrollY < lastScrollY - 10) { // 向上滚动超过10px
+                    // 显示导航栏
+                    navbar.style.transform = 'translateY(0)';
+                    hidden = false;
+                } else if (currentScrollY > lastScrollY + scrollThreshold && !hidden) { // 向下滚动超过阈值且当前未隐藏
+                    // 隐藏导航栏
+                    navbar.style.transform = 'translateY(-100%)';
+                    hidden = true;
+                }
+            } else {
+                // 页面顶部始终显示导航栏
+                navbar.style.transform = 'translateY(0)';
+            }
+            
+            lastScrollY = currentScrollY;
+        });
+        
+        // 处理登录跳转，添加recommend参数
+        window.handleLoginClick = function() {
+            // 获取当前页面URL中的recommend参数值，确保在有锚点的情况下也能正确获取
+            const urlParams = new URLSearchParams(window.location.search);
+            const recommendValue = urlParams.get('recommend') || '';
+            // 构建目标登录URL，只传递recommend字段和值
+            const loginUrl = 'https://guanli.mshy.cn/?recommend=' + encodeURIComponent(recommendValue);
+            // 执行跳转
+            window.location.href = loginUrl;
+        };
+        
+        // 处理下载页面跳转，添加recommend参数
+        window.handleDownloadClick = function() {
+            // 获取当前页面URL中的recommend参数值，确保在有锚点的情况下也能正确获取
+            const urlParams = new URLSearchParams(window.location.search);
+            const recommendValue = urlParams.get('recommend') || '';
+            // 构建目标下载URL，添加recommend参数，使用绝对路径确保在任何页面都能正确跳转
+            let downloadUrl = '/download.html';
+            if (recommendValue) {
+                downloadUrl += '?recommend=' + encodeURIComponent(recommendValue);
+            }
+            // 执行跳转
+            window.location.href = downloadUrl;
+        };
+        
+        // 处理锚点链接跳转，添加recommend参数
+        window.handleAnchorClick = function(anchorId) {
+            // 获取当前页面URL中的recommend参数值，确保在有锚点的情况下也能正确获取
+            const urlParams = new URLSearchParams(window.location.search);
+            const recommendValue = urlParams.get('recommend') || '';
+            // 构建目标URL，添加recommend参数和锚点，使用绝对路径确保在任何页面都能正确跳转
+            let targetUrl = '/index.html';
+            if (recommendValue) {
+                targetUrl += '?recommend=' + encodeURIComponent(recommendValue);
+            }
+            targetUrl += '#' + anchorId;
+            // 执行跳转
+            window.location.href = targetUrl;
+        };
+        
+        // 确保window上的函数在动态加载后被正确定义
+        if (!window.handleLoginClick || !window.handleDownloadClick || !window.handleAnchorClick) {
+            // 如果函数未正确定义，重新定义它们
+            window.handleLoginClick = window.handleLoginClick;
+            window.handleDownloadClick = window.handleDownloadClick;
+            window.handleAnchorClick = window.handleAnchorClick;
+        }
+    })();
+</script>
+    </div>
+
+    <!-- 英雄区域 -->
+    <section class="pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden relative">
+        <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 -z-10"></div>
+        
+        <!-- 装饰元素 -->
+        <div class="absolute top-20 right-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl -z-10"></div>
+        <div class="absolute bottom-10 left-10 w-80 h-80 bg-secondary/10 rounded-full blur-3xl -z-10"></div>
+        
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center">
+                <div class="w-full lg:w-1/2 mb-12 lg:mb-0 ml-0 lg:ml-16">
+                    <h1 class="text-[clamp(2rem,5vw,3.0rem)] font-bold leading-tight text-dark mb-6">
+                        多平台<span class="text-primary">AI客服</span><span id="typing-text">聚合中枢</span><span id="cursor">|</span>
+                    </h1>
+                    <style>
+                        #cursor {
+                            color: #165DFF;
+                            animation: blink 1s infinite;
+                            font-weight: bold;
+                        }
+                        @keyframes blink {
+                            0%, 100% { opacity: 1; }
+                            50% { opacity: 0; }
+                        }
+                    </style>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // 打字效果函数
+                            function typeEffect() {
+                                const textElement = document.getElementById('typing-text');
+                                const cursorElement = document.getElementById('cursor');
+                                const words = ['聚合中枢', '解放双手'];
+                                let wordIndex = 0;
+                                let charIndex = 0;
+                                let isDeleting = false;
+                                let isEnd = false;
+                                
+                                function type() {
+                                    // 获取当前要处理的单词
+                                    const currentWord = words[wordIndex];
+                                    
+                                    // 控制光标闪烁
+                                    cursorElement.style.opacity = cursorElement.style.opacity === '0' ? '1' : '0';
+                                    
+                                    if (!isDeleting && charIndex < currentWord.length) {
+                                        // 打字状态
+                                        textElement.textContent = currentWord.substring(0, charIndex + 1);
+                                        charIndex++;
+                                        setTimeout(type, 150); // 打字速度
+                                    } else if (isDeleting && charIndex > 0) {
+                                        // 回退状态
+                                        textElement.textContent = currentWord.substring(0, charIndex - 1);
+                                        charIndex--;
+                                        setTimeout(type, 80); // 回退速度
+                                    } else if (!isDeleting && charIndex === currentWord.length) {
+                                        // 完成当前单词打字
+                                        isEnd = true;
+                                        setTimeout(() => {
+                                            isDeleting = true;
+                                            type();
+                                        }, 1500); // 停留时间
+                                    } else {
+                                        // 完成回退，切换到下一个单词
+                                        isDeleting = false;
+                                        isEnd = false;
+                                        wordIndex = (wordIndex + 1) % words.length;
+                                        setTimeout(type, 500);
+                                    }
+                                }
+                                
+                                // 开始打字效果
+                                type();
+                            }
+                            
+                            // 调用打字效果函数
+                            typeEffect();
+                            });
+                        </script>
+                    <p class="text-[clamp(1rem,2vw,1.25rem)] text-gray-600 mb-8 max-w-xl">
+                        1个窗口管理所有店铺，AI替你处理80%的咨询，让你专注于真正重要的事情。
+                    </p>
+                    
+                    <!-- 数据指标 -->
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-10">
+                        <div class="bg-white p-4 rounded-xl shadow-sm">
+                            <div class="text-3xl font-bold text-primary mb-1">90%</div>
+                            <div class="text-gray-600 text-sm">咨询响应提速</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm">
+                            <div class="text-3xl font-bold text-primary mb-1">80%+</div>
+                            <div class="text-gray-600 text-sm">人力成本降低</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm col-span-2 md:col-span-1">
+                            <div class="text-3xl font-bold text-primary mb-1">58%</div>
+                            <div class="text-gray-600 text-sm">夜间咨询转化率提升</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 行动按钮 -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="download.html" class="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-lg transition-all shadow-lg hover:shadow-xl text-center font-medium text-lg">
+                            立即下载使用 <i class="fa fa-arrow-right ml-2"></i>
+                        </a>
+                        <a href="trial.html" class="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-lg transition-all shadow-lg hover:shadow-xl text-center font-medium text-lg">
+                            <i class="fa fa-calendar-check mr-2"></i> 预约试用
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- AI客服组件 -->
+                <div class="w-full lg:w-[57.5%] relative">
+                    <!-- 蒙版背景 -->
+                    <div class="absolute inset-0 bg-white/10 backdrop-blur-sm rounded-xl -z-10"></div>
+                    
+                    <div class="bg-white/50 rounded-xl shadow-lg overflow-hidden transform transition-all duration-500 hover:scale-[1.02] max-w-lg mx-auto lg:ml-auto lg:mr-8">
+                        <!-- 头部 -->
+                        <div class="bg-primary/30 text-white p-4 flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fa fa-comments text-xl"></i>
+                                </div>
+                                <div>
+                                    <h2 class="font-semibold">在线客服</h2>
+                                    <p class="text-xs text-white/80" id="chat-status">正在处理12条咨询</p>
+                                </div>
+                            </div>
+                            <div class="flex space-x-3">
+                                <div class="flex items-center">
+                                    <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+                                    <span class="text-xs">在线</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 对话内容区域 -->
+                        <div id="main-chat-messages" class="p-4 space-y-4 h-[400px] overflow-y-auto bg-white/30">
+                            <!-- 消息将通过JS动态添加 -->
+                        </div>
+                        
+                        <!-- 输入区域 -->
+                        <div class="border-t border-gray-200 p-4 bg-gray-50">
+                            <div class="flex items-center space-x-3">
+                                <input type="text" placeholder="输入消息..." class="flex-grow py-3 px-5 rounded-full bg-white/50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50 text-base">
+                                <button class="w-12 h-12 rounded-full bg-primary/90 flex items-center justify-center text-white hover:bg-primary transition-colors">
+                                    <i class="fa fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 浮动统计卡片 -->
+                    <div class="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-lg animate-pulse-slow hidden md:block z-10">
+                        <div class="text-sm font-medium text-green-600">
+                            <i class="fa fa-line-chart mr-1"></i> 转化率提升33%
+                        </div>
+                    </div>
+                    
+                    <!-- 背景效果 -->
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full blur-3xl -z-10"></div>
+                    
+                    <script>
+                        // AI客服对话脚本
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // 对话数据
+                            const messages = [
+                                { side: 'left', text: '你好在吗', sender: '买家' },
+                                { side: 'right', text: '亲亲，我在哦，请问有什么可以帮您', sender: 'AI客服' },
+                                { side: 'left', text: '身高176 适合什么尺码', sender: '买家' },
+                                { side: 'right', text: '亲，这款是修身款哦，建议您穿着XXL码', sender: 'AI客服' },
+                                { side: 'left', text: '几天发货？', sender: '买家' },
+                                { side: 'right', text: '亲亲，商品为现货哦，会尽快打包发货哦', sender: 'AI客服' },
+                                { type: 'timestamp', text: '2天后' },
+                                { side: 'left', text: '什么时候能到？', sender: '买家' },
+                                { side: 'right', text: '亲爱的，目前快递正在运送中哦，目前显示已经到达郑州中转，预计很快就会送到哦', sender: 'AI客服' }
+                            ];
+
+                            const chatContainer = document.getElementById('main-chat-messages');
+                            const statusText = document.getElementById('chat-status');
+                            
+                            // 主聊天窗口样式
+                            const chatStyles = `
+                                .chat-message {
+                                    animation: fadeIn 0.5s ease-out;
+                                }
+                                .chat-message-left {
+                                    display: flex;
+                                    align-items: flex-start;
+                                    margin-bottom: 12px;
+                                }
+                                .chat-message-right {
+                                    display: flex;
+                                    align-items: flex-start;
+                                    justify-content: flex-end;
+                                    margin-bottom: 12px;
+                                }
+                                .chat-avatar {
+                                    width: 32px;
+                                    height: 32px;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    margin-right: 8px;
+                                    flex-shrink: 0;
+                                    font-size: 12px;
+                                }
+                                .chat-avatar-right {
+                                    order: 2;
+                                    margin-right: 0;
+                                    margin-left: 8px;
+                                }
+                                .chat-bubble {
+                                    max-width: 80%;
+                                    padding: 10px 14px;
+                                    border-radius: 16px;
+                                    font-size: 13px;
+                                    line-height: 1.4;
+                                    word-wrap: break-word;
+                                }
+                                .chat-bubble-left {
+                                    background-color: rgba(245, 245, 245, 0.7);
+                                    color: #555;
+                                    border-bottom-left-radius: 4px;
+                                }
+                                .chat-bubble-right {
+                                    background-color: rgba(22, 93, 255, 0.7);
+                                    color: white;
+                                    border-bottom-right-radius: 4px;
+                                }
+                                .chat-sender {
+                                    font-size: 11px;
+                                    color: #999;
+                                    margin-bottom: 4px;
+                                    margin-left: 42px;
+                                }
+                                .chat-sender-right {
+                                    text-align: right;
+                                    margin-left: 0;
+                                    margin-right: 42px;
+                                }
+                                .chat-timestamp {
+                                    text-align: center;
+                                    margin: 12px 0;
+                                }
+                                .chat-timestamp span {
+                                    background-color: rgba(0,0,0,0.04);
+                                    color: #999;
+                                    padding: 3px 10px;
+                                    border-radius: 10px;
+                                    font-size: 11px;
+                                }
+                                @keyframes fadeIn {
+                                    from {
+                                        opacity: 0;
+                                        transform: translateY(6px);
+                                    }
+                                    to {
+                                        opacity: 1;
+                                        transform: translateY(0);
+                                    }
+                                }
+                                /* 美化滚动条 */
+                                #main-chat-messages::-webkit-scrollbar {
+                                    width: 4px;
+                                }
+                                #main-chat-messages::-webkit-scrollbar-track {
+                                    background: rgba(241, 245, 249, 0.3);
+                                    border-radius: 8px;
+                                }
+                                #main-chat-messages::-webkit-scrollbar-thumb {
+                                    background-color: rgba(22, 93, 255, 0.2);
+                                    border-radius: 8px;
+                                    transition: background-color 0.3s ease;
+                                }
+                                #main-chat-messages::-webkit-scrollbar-thumb:hover {
+                                    background-color: rgba(22, 93, 255, 0.3);
+                                }
+                            `;
+
+                            // 添加样式
+                            const styleElement = document.createElement('style');
+                            styleElement.textContent = chatStyles;
+                            document.head.appendChild(styleElement);
+                            
+                            // 添加时间戳
+                            function addTimestamp(text) {
+                                const timestampEl = document.createElement('div');
+                                timestampEl.className = 'chat-timestamp';
+                                timestampEl.innerHTML = `<span>${text}</span>`;
+                                chatContainer.appendChild(timestampEl);
+                            }
+                            
+                            // 添加消息到聊天窗口
+                            function addMessage(message, index) {
+                                return new Promise((resolve) => {
+                                    setTimeout(() => {
+                                        // 更新状态文本
+                                        if (message.side === 'right') {
+                                            statusText.textContent = '正在输入中...';
+                                        } else if (message.side === 'left') {
+                                            statusText.textContent = '对方正在输入...';
+                                        }
+                                        
+                                        if (message.type === 'timestamp') {
+                                            // 添加时间分隔线
+                                            addTimestamp(message.text);
+                                        } else {
+                                            // 创建发送者标签
+                                            const senderEl = document.createElement('div');
+                                            senderEl.className = `chat-sender ${message.side === 'right' ? 'chat-sender-right' : ''}`;
+                                            senderEl.textContent = message.sender;
+                                            chatContainer.appendChild(senderEl);
+                                            
+                                            // 创建消息元素
+                                            const messageEl = document.createElement('div');
+                                            messageEl.className = `chat-message chat-message-${message.side}`;
+                                            
+                                            const avatarClass = message.side === 'left' 
+                                                ? 'bg-gray-200 text-gray-700' 
+                                                : 'bg-primary/80 text-white';
+                                            
+                                            const bubbleClass = message.side === 'left' 
+                                                ? 'chat-bubble-left' 
+                                                : 'chat-bubble-right';
+                                            
+                                            messageEl.innerHTML = `
+                                                <div class="chat-avatar ${avatarClass} ${message.side === 'right' ? 'chat-avatar-right' : ''}">
+                                                    <i class="fa fa-user"></i>
+                                                </div>
+                                                <div class="chat-bubble ${bubbleClass}">
+                                                    ${message.text}
+                                                </div>
+                                            `;
+                                            
+                                            chatContainer.appendChild(messageEl);
+                                        }
+                                        
+                                        // 滚动到底部
+                                        chatContainer.scrollTop = chatContainer.scrollHeight;
+                                        
+                                        resolve();
+                                    }, 2000 + index * 800); // 动态延迟
+                                });
+                            }
+                            
+                            // 初始化聊天
+                            async function initChat() {
+                                // 清空现有消息
+                                chatContainer.innerHTML = '';
+                                
+                                // 逐条添加消息
+                                for (let i = 0; i < messages.length; i++) {
+                                    await addMessage(messages[i], i);
+                                }
+                                
+                                // 所有消息显示完毕后，恢复状态并准备重新开始
+                                statusText.textContent = '正在处理12条咨询';
+                                
+                                setTimeout(() => {
+                                    initChat();
+                                }, 3000);
+                            }
+                            
+                            // 页面加载完成后初始化
+                            initChat();
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 信任背书 - 平台支持 -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-gray-500 mb-10">支持全平台电商生态</p>
+            <div class="flex flex-wrap justify-center items-center gap-6 md:gap-8">
+                <div class="platform-icon">
+                    <img src="img/taobao.png" alt="淘宝平台logo" class="brand-logo object-contain">
+                </div>
+                <div class="platform-icon">
+                    <img src="img/jd.png" alt="京东平台logo" class="brand-logo object-contain">
+                </div>
+                <div class="platform-icon">
+                    <img src="img/pinduoduo.jpg" alt="拼多多平台logo" class="brand-logo object-contain">
+                </div>
+                <div class="platform-icon">
+                    <img src="img/doudian.png" alt="抖音平台logo" class="brand-logo object-contain">
+                </div>
+                <div class="platform-icon">
+                    <img src="img/kuaishou.jpg" alt="快手平台logo" class="brand-logo object-contain">
+                </div>
+                <div class="platform-icon">
+                    <img src="img/shipinhao.png" alt="视频号平台logo" class="brand-logo object-contain">
+                </div>
+                <div class="platform-icon">
+                    <img src="img/xiaohongshu.png" alt="小红书平台logo" class="brand-logo object-contain">
+                </div>
+                <div class="platform-icon">
+                    <img src="img/tianmao.png" alt="天猫平台logo" class="brand-logo object-contain">
+                </div>
+            </div>
+            <p class="text-center text-gray-500 mt-10">10万+商家的共同选择</p>
+        </div>
+    </section>
+
+    <!-- 核心功能 - 6个板块 -->
+    <section id="features" class="py-20 bg-gradient-to-br from-primary/5 to-secondary/5">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-[clamp(1.5rem,3vw,2.0rem)] font-bold mb-4">为什么选择我们的AI客服聚合平台</h2>
+                <p class="text-gray-600 text-base">一站式解决多平台客服管理难题，让AI为您的电商业务赋能</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- 功能卡片1 -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg card-hover border border-gray-100 relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-primary/5 rounded-full -z-10 group-hover:bg-primary/10 transition-all duration-500"></div>
+                    <div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
+                        <i class="fa fa-comments text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-3">日对话处理能力 <span class="inline-block min-w-16 text-right"><span class="counter text-2xl font-bold text-primary" data-target="1000">1,000</span></span> 万+</h3>
+                    <p class="text-gray-600 text-sm">峰值并发可达 50,000 次 / 秒</p>
+                </div>
+                
+                <!-- 功能卡片2 -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg card-hover border border-gray-100 relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-secondary/5 rounded-full -z-10 group-hover:bg-secondary/10 transition-all duration-500"></div>
+                    <div class="w-16 h-16 rounded-xl bg-secondary/10 flex items-center justify-center mb-6">
+                        <i class="fa fa-line-chart text-secondary text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-3">成交金额超 <span class="inline-block min-w-16 text-right"><span class="counter text-2xl font-bold text-secondary" data-target="3000">3,000</span></span> 万+</h3>
+                    <p class="text-gray-600 text-sm">每日助力商家成交金额</p>
+                </div>
+                
+                <!-- 功能卡片3 -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg card-hover border border-gray-100 relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-accent/5 rounded-full -z-10 group-hover:bg-accent/10 transition-all duration-500"></div>
+                    <div class="w-16 h-16 rounded-xl bg-accent/10 flex items-center justify-center mb-6">
+                        <i class="fa fa-shield text-accent text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-3">智能拦截在途快递 <span class="inline-block min-w-24 text-right"><span class="counter text-2xl font-bold text-accent" data-target="50000">50,000</span></span> 次/日</h3>
+                    <p class="text-gray-600 text-sm">精准拦截在途仅退款等恶意售后，降低经营亏损</p>
+                </div>
+                
+                <!-- 功能卡片4 -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg card-hover border border-gray-100 relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-primary/5 rounded-full -z-10 group-hover:bg-primary/10 transition-all duration-500"></div>
+                    <div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
+                        <i class="fa fa-server text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-3">可用率高达 <span class="inline-block min-w-28 text-right text-2xl font-bold text-primary">99.9999</span> %</h3>
+                    <p class="text-gray-600 text-sm">全国布局 38 + 服务节点，低延迟</p>
+                </div>
+                
+                <!-- 功能卡片5 -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg card-hover border border-gray-100 relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-secondary/5 rounded-full -z-10 group-hover:bg-secondary/10 transition-all duration-500"></div>
+                    <div class="w-16 h-16 rounded-xl bg-secondary/10 flex items-center justify-center mb-6">
+                        <i class="fa fa-box-open text-secondary text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-3">开箱即用，3 分钟极速上线</h3>
+                    <p class="text-gray-600 text-sm">无需复杂搭建</p>
+                </div>
+                
+                <!-- 功能卡片6 -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg card-hover border border-gray-100 relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-accent/5 rounded-full -z-10 group-hover:bg-accent/10 transition-all duration-500"></div>
+                    <div class="w-16 h-16 rounded-xl bg-accent/10 flex items-center justify-center mb-6">
+                        <i class="fa fa-gift text-accent text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-3">助力商家，50 + 核心功能免费开放</h3>
+                    <p class="text-gray-600 text-sm">无额外收费</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        // 数字累加动画
+        function animateCounter(counter) {
+            const target = +counter.getAttribute('data-target');
+            const duration = 2000;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = progress * target;
+                
+                if (target % 1 !== 0) {
+                    counter.innerText = current.toFixed(4);
+                } else {
+                    counter.innerText = Math.floor(current).toLocaleString();
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    if (target % 1 !== 0) {
+                        counter.innerText = target.toFixed(4);
+                    } else {
+                        counter.innerText = target.toLocaleString();
+                    }
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const counters = document.querySelectorAll('.counter');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        if (!counter.classList.contains('animated')) {
+                            counter.classList.add('animated');
+                            animateCounter(counter);
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            counters.forEach(counter => {
+                observer.observe(counter);
+            });
+        });
+    </script>
+    
+<!-- 核心能力：从客服到售后，AI 全链路接管 -->
+    <section id="capabilities" class="pt-12 pb-20 bg-gradient-to-b from-primary/10 via-primary/5 to-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- 区块头 -->
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-[clamp(1.75rem,4vw,2.5rem)] font-bold mb-4 text-dark">从客服到售后，AI 全链路接管</h2>
+                <p class="text-gray-600 text-lg">告别售后内耗，让退款不再“仅退款”</p>
+            </div>
+
+            <!-- 四个核心模块（宽度与上方「为什么选择我们」那屏对齐） -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mb-14">
+                    <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 hover:shadow-xl hover:border-primary/30 transition-all duration-300">
+                        <div class="flex items-start justify-between mb-5">
+                            <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                                <i class="fa fa-headset text-primary text-xl"></i>
+                            </div>
+                            <span class="bg-secondary/15 border border-secondary/40 text-secondary text-xs font-bold px-2 py-1 rounded">NEW</span>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 text-dark">售后工作台</h3>
+                        <p class="text-gray-600 text-sm">全面接管，仅退款等自动处理</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 hover:shadow-xl hover:border-secondary/30 transition-all duration-300">
+                        <div class="flex items-start justify-between mb-5">
+                            <div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
+                                <i class="fa fa-clipboard-list text-secondary text-xl"></i>
+                            </div>
+                            <span class="bg-secondary/15 border border-secondary/40 text-secondary text-xs font-bold px-2 py-1 rounded">NEW</span>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 text-dark">工单智能处理</h3>
+                        <p class="text-gray-600 text-sm">智能高效自动处理，全量工单信息</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 hover:shadow-xl hover:border-accent/30 transition-all duration-300">
+                        <div class="flex items-start justify-between mb-5">
+                            <div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                                <i class="fa fa-box text-accent text-xl"></i>
+                            </div>
+                            <span class="bg-secondary/15 border border-secondary/40 text-secondary text-xs font-bold px-2 py-1 rounded">NEW</span>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 text-dark">包裹中心</h3>
+                        <p class="text-gray-600 text-sm">全面检测并实时通知，快递催件等异常</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 hover:shadow-xl hover:border-primary/30 transition-all duration-300">
+                        <div class="flex items-start justify-between mb-5">
+                            <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                                <i class="fa fa-user-shield text-primary text-xl"></i>
+                            </div>
+                            <span class="bg-secondary/15 border border-secondary/40 text-secondary text-xs font-bold px-2 py-1 rounded">NEW</span>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 text-dark">商家权益</h3>
+                        <p class="text-gray-600 text-sm">不合理退款智能处理</p>
+                    </div>
+            </div>
+
+            <!-- 八项细节功能 -->
+            <div class="max-w-6xl mx-auto">
+                <h3 class="text-center font-bold text-lg mb-8 text-dark">更多细节功能</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white border border-gray-100 rounded-xl p-4 hover:border-primary/30 hover:shadow-md transition-all duration-300">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fa fa-ban text-primary"></i>
+                                <h4 class="font-bold text-sm text-dark">智能拦截</h4>
+                            </div>
+                            <p class="text-gray-500 text-xs leading-relaxed">精准识别恶意仅退款</p>
+                        </div>
+                        <div class="bg-white border border-gray-100 rounded-xl p-4 hover:border-primary/30 hover:shadow-md transition-all duration-300">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fa fa-file-signature text-primary"></i>
+                                <h4 class="font-bold text-sm text-dark">售后申诉</h4>
+                                <span class="ml-auto bg-secondary/15 border border-secondary/40 text-secondary text-xs font-bold px-1.5 py-0.5 rounded">NEW</span>
+                            </div>
+                            <p class="text-gray-500 text-xs leading-relaxed">不合理售后自动提交复核</p>
+                        </div>
+                        <div class="bg-white border border-gray-100 rounded-xl p-4 hover:border-primary/30 hover:shadow-md transition-all duration-300">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fa fa-chart-line text-primary"></i>
+                                <h4 class="font-bold text-sm text-dark">数据分析</h4>
+                            </div>
+                            <p class="text-gray-500 text-xs leading-relaxed">一目了然，快速定位</p>
+                        </div>
+                        <div class="bg-white border border-gray-100 rounded-xl p-4 hover:border-primary/30 hover:shadow-md transition-all duration-300">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fa fa-scale-balanced text-primary"></i>
+                                <h4 class="font-bold text-sm text-dark">智能同意/拒绝</h4>
+                                <span class="ml-auto bg-secondary/15 border border-secondary/40 text-secondary text-xs font-bold px-1.5 py-0.5 rounded">NEW</span>
+                            </div>
+                            <p class="text-gray-500 text-xs leading-relaxed">退货退款规则自动判定</p>
+                        </div>
+                        <div class="bg-white border border-gray-100 rounded-xl p-4 hover:border-primary/30 hover:shadow-md transition-all duration-300">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fa fa-truck-fast text-primary"></i>
+                                <h4 class="font-bold text-sm text-dark">包裹中心检测</h4>
+                                <span class="ml-auto bg-secondary/15 border border-secondary/40 text-secondary text-xs font-bold px-1.5 py-0.5 rounded">NEW</span>
+                            </div>
+                            <p class="text-gray-500 text-xs leading-relaxed">物流异常主动预警</p>
+                        </div>
+                        <div class="bg-white border border-gray-100 rounded-xl p-4 hover:border-primary/30 hover:shadow-md transition-all duration-300">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fa fa-robot text-primary"></i>
+                                <h4 class="font-bold text-sm text-dark">工单自动化</h4>
+                                <span class="ml-auto bg-secondary/15 border border-secondary/40 text-secondary text-xs font-bold px-1.5 py-0.5 rounded">NEW</span>
+                            </div>
+                            <p class="text-gray-500 text-xs leading-relaxed">工单自动完结，自动通知</p>
+                        </div>
+                        <div class="bg-white border border-gray-100 rounded-xl p-4 hover:border-primary/30 hover:shadow-md transition-all duration-300">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fa fa-store text-primary"></i>
+                                <h4 class="font-bold text-sm text-dark">多店统一管理</h4>
+                            </div>
+                            <p class="text-gray-500 text-xs leading-relaxed">不限店铺，矩阵卖家无压力</p>
+                        </div>
+                        <div class="bg-white border border-gray-100 rounded-xl p-4 hover:border-primary/30 hover:shadow-md transition-all duration-300">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fa fa-magnifying-glass text-primary"></i>
+                                <h4 class="font-bold text-sm text-dark">AI智能审查</h4>
+                                <span class="ml-auto bg-secondary/15 border border-secondary/40 text-secondary text-xs font-bold px-1.5 py-0.5 rounded">NEW</span>
+                            </div>
+                            <p class="text-gray-500 text-xs leading-relaxed">全方位审查售后风险，避免误判</p>
+                        </div>
+                </div>
+                <p class="text-center text-gray-400 text-xs mt-6">* 更多功能持续更新中，最终功能以官网公布为准</p>
+            </div>
+
+            <!-- 行动按钮 -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mt-12">
+                <a href="trial.html" class="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-lg transition-all shadow-lg font-medium text-center">预约试用</a>
+                <a href="download.html" class="bg-white hover:bg-gray-50 text-dark border border-gray-200 px-8 py-4 rounded-lg transition-all font-medium text-center">立即下载使用</a>
+            </div>
+        </div>
+    </section>
+
+<!-- 演示区域 -->
+    <section id="demo" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-[clamp(1.75rem,4vw,2.5rem)] font-bold mb-4">2 分钟了解软件基本功能</h2>
+                <p class="text-gray-600 text-lg">简单直观的操作流程，让您快速掌握系统使用方法</p>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden max-w-4xl mx-auto">
+                <div class="relative">
+                    <video id="demoVideo" class="w-full h-auto aspect-video bg-black" controls preload="metadata">
+                        <source src="/软件基本功能.mp4" type="video/mp4">
+                        您的浏览器不支持HTML5视频播放，请更新浏览器版本。
+                    </video>
+                    
+                    <!-- 视频信息覆盖层 - 仅在视频未播放时显示 -->
+                    <div id="videoOverlay" class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                        <button id="playButton" class="w-20 h-20 rounded-full bg-primary/90 hover:bg-primary text-white flex items-center justify-center transition-all shadow-lg hover:shadow-xl transform hover:scale-110">
+                            <i class="fa fa-play text-2xl ml-1"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- 步骤指示器 -->
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-white font-bold text-lg">软件基本功能演示</h3>
+                                <p class="text-gray-200 text-sm">从基础设置到日常操作，一次看完</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="w-2 h-2 rounded-full bg-white"></span>
+                                <span class="w-2 h-2 rounded-full bg-white/50"></span>
+                                <span class="w-2 h-2 rounded-full bg-white/50"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    // 视频播放控制
+                    const demoVideo = document.getElementById('demoVideo');
+                    const videoOverlay = document.getElementById('videoOverlay');
+                    const playButton = document.getElementById('playButton');
+                    
+                    // 点击播放按钮时播放视频并隐藏覆盖层
+                    playButton.addEventListener('click', function() {
+                        demoVideo.play();
+                        videoOverlay.style.display = 'none';
+                    });
+                    
+                    // 视频播放时隐藏覆盖层
+                    demoVideo.addEventListener('play', function() {
+                        videoOverlay.style.display = 'none';
+                    });
+                    
+                    // 视频暂停时显示覆盖层
+                    demoVideo.addEventListener('pause', function() {
+                        if (!demoVideo.ended) {
+                            videoOverlay.style.display = 'flex';
+                            videoOverlay.style.opacity = '1';
+                        }
+                    });
+                    
+                    // 视频结束时显示覆盖层
+                    demoVideo.addEventListener('ended', function() {
+                        videoOverlay.style.display = 'flex';
+                        videoOverlay.style.opacity = '1';
+                    });
+                </script>
+                
+                <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 border-t">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                            <span class="text-primary font-bold">1</span>
+                        </div>
+                        <h4 class="font-bold mb-2">添加店铺</h4>
+                        <p class="text-gray-600 text-sm">一键添加各平台店铺，无需复杂设置</p>
+                    </div>
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                            <span class="text-primary font-bold">2</span>
+                        </div>
+                        <h4 class="font-bold mb-2">AI学习</h4>
+                        <p class="text-gray-600 text-sm">自动抓取商品信息，生成智能知识库</p>
+                    </div>
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                            <span class="text-primary font-bold">3</span>
+                        </div>
+                        <h4 class="font-bold mb-2">开始使用</h4>
+                        <p class="text-gray-600 text-sm">AI开始介入，解放双手</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 数据统计 -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-12 items-center">
+                <div class="w-full lg:w-1/2">
+                    <h2 class="text-[clamp(1.75rem,4vw,2.5rem)] font-bold mb-6">数据驱动，提升业绩</h2>
+                    <p class="text-gray-600 text-lg mb-8">通过智能数据分析，发现业务增长点，优化客户体验</p>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">咨询转化率</span>
+                                <span class="text-primary font-bold">+32%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-primary h-2.5 rounded-full" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">客户满意度</span>
+                                <span class="text-primary font-bold">+45%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-primary h-2.5 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">问题解决率</span>
+                                <span class="text-primary font-bold">+68%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-primary h-2.5 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-10">
+                        <a href="#get-started" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-colors">
+                            查看详细数据分析报告 <i class="fa fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="w-full lg:w-1/2 bg-white p-6 rounded-xl shadow-lg">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-xl">客服效能分析</h3>
+                        <div class="flex gap-2">
+                            <button class="px-3 py-1 text-sm bg-primary/10 text-primary rounded-lg">周</button>
+                            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">月</button>
+                            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">年</button>
+                        </div>
+                    </div>
+                    <div class="h-80">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 客户评价 -->
+    <section id="testimonials" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-[clamp(1.75rem,4vw,2.5rem)] font-bold mb-4">商家们的真实反馈</h2>
+                <p class="text-gray-600 text-lg">来自各行各业的电商卖家使用体验分享</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 评价1 -->
+                <div class="bg-white p-8 rounded-xl shadow-md card-hover">
+                    <div class="flex items-center mb-6">
+                        <img src="/img/avatar-1.png" alt="用户头像" class="w-14 h-14 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold">张小姐</h4>
+                            <p class="text-gray-500 text-sm">服装类目 · 淘宝/拼多多双店</p>
+                        </div>
+                    </div>
+                    <div class="text-yellow-400 mb-4">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div>
+                    <p class="text-gray-600">
+                        "以前每天要在多个平台切换回复消息，经常遗漏。用了这个系统后，所有消息都在一个界面，AI还能自动回复大部分问题，让我有更多时间去选品和运营，客服成本降低了60%！"
+                    </p>
+                </div>
+                
+                <!-- 评价2 -->
+                <div class="bg-white p-8 rounded-xl shadow-md card-hover">
+                    <div class="flex items-center mb-6">
+                        <img src="/img/avatar-2.png" alt="用户头像" class="w-14 h-14 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold">李先生</h4>
+                            <p class="text-gray-500 text-sm">3C数码 · 京东自营店</p>
+                        </div>
+                    </div>
+                    <div class="text-yellow-400 mb-4">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa-regular fa-star-half-stroke"></i>
+                    </div>
+                    <p class="text-gray-600">
+                        "夜间咨询一直是我们的痛点，客户经常因为得不到及时回复而流失。AI客服完美解决了这个问题，晚上也能保持秒级响应，夜间订单量提升了45%，非常满意！"
+                    </p>
+                </div>
+                
+                <!-- 评价3 -->
+                <div class="bg-white p-8 rounded-xl shadow-md card-hover">
+                    <div class="flex items-center mb-6">
+                        <img src="/img/avatar-3.png" alt="用户头像" class="w-14 h-14 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold">王女士</h4>
+                            <p class="text-gray-500 text-sm">美妆护肤 · 抖音小店</p>
+                        </div>
+                    </div>
+                    <div class="text-yellow-400 mb-4">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div>
+                    <p class="text-gray-600">
+                        "作为新手卖家，最担心的就是客服回复不专业。这个系统会自动学习我的商品信息，回复得比我自己还专业！数据分析功能也很强大，帮我发现了很多客户关心的问题，针对性优化后转化率提高不少。"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 合作品牌 -->
+    <section id="brands" class="py-20 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-[clamp(1.75rem,4vw,2.5rem)] font-bold mb-4">合作品牌</h2>
+                <p class="text-gray-600 text-lg">众多知名品牌选择我们的AI客服解决方案</p>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 items-center justify-items-center">
+                <div class="w-20 h-16 flex items-center justify-center">
+                    <img src="hezuo/baixiang.png" alt="白象品牌logo" class="max-w-full max-h-full object-contain">
+                </div>
+                <div class="w-20 h-16 flex items-center justify-center">
+                    <img src="hezuo/biaoma.jpg" alt="宝马品牌logo" class="max-w-full max-h-full object-contain">
+                </div>
+                <div class="w-20 h-16 flex items-center justify-center">
+                    <img src="hezuo/daishu.jpg" alt="袋鼠品牌logo" class="max-w-full max-h-full object-contain">
+                </div>
+                <div class="w-20 h-16 flex items-center justify-center">
+                    <img src="hezuo/diaopai.jpg" alt="雕牌品牌logo" class="max-w-full max-h-full object-contain">
+                </div>
+                <div class="w-20 h-16 flex items-center justify-center">
+                    <img src="hezuo/fangtia.jpg" alt="方太品牌logo" class="max-w-full max-h-full object-contain">
+                </div>
+                <div class="w-20 h-16 flex items-center justify-center">
+                    <img src="hezuo/hongxingerke.jpg" alt="鸿星尔克品牌logo" class="max-w-full max-h-full object-contain">
+                </div>
+                <div class="w-20 h-16 flex items-center justify-center">
+                    <img src="hezuo/huili.jpg" alt="汇力品牌logo" class="max-w-full max-h-full object-contain">
+                </div>
+                <div class="w-20 h-16 flex items-center justify-center">
+                    <img src="hezuo/jianeng.jpg" alt="佳能品牌logo" class="max-w-full max-h-full object-contain">
+                </div>
+                <div class="w-20 h-16 flex items-center justify-center">
+                    <img src="hezuo/laoyeche.jpg" alt="老爷车品牌logo" class="max-w-full max-h-full object-contain">
+                </div>
+                <div class="w-20 h-16 flex items-center justify-center">
+                    <img src="hezuo/lishizhen.jpg" alt="李时珍品牌logo" class="max-w-full max-h-full object-contain">
+                </div>
+                <div class="w-20 h-16 flex items-center justify-center">
+                    <img src="hezuo/luobinhan.jpg" alt="罗宾汉品牌logo" class="max-w-full max-h-full object-contain">
+                </div>
+                <div class="w-20 h-16 flex items-center justify-center">
+                    <img src="hezuo/shuoni.png" alt="说你品牌logo" class="max-w-full max-h-full object-contain">
+                </div>
+                <div class="w-20 h-16 flex items-center justify-center">
+                    <img src="hezuo/tebu.png" alt="特步品牌logo" class="max-w-full max-h-full object-contain">
+                </div>
+                <div class="w-20 h-16 flex items-center justify-center">
+                    <img src="hezuo/wajiale.jpg" alt="娃哈哈品牌logo" class="max-w-full max-h-full object-contain">
+                </div>
+                <div class="w-20 h-16 flex items-center justify-center">
+                    <img src="hezuo/yongjiu.jpg" alt="永久品牌logo" class="max-w-full max-h-full object-contain">
+                </div>
+
+            </div>
+            
+            <div class="mt-16 text-center">
+                <p class="text-gray-600 mb-6">加入数千家已经提升客服效率的企业行列</p>
+                <a href="#get-started" class="inline-block bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-lg transition-all shadow-lg hover:shadow-xl font-medium text-lg">
+                    联系我们了解合作方案
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 行动召唤 -->
+    <section id="get-started" class="py-20 bg-gradient-to-br from-primary to-primary/80 text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-[clamp(1.75rem,4vw,2.5rem)] font-bold mb-6">开始提升您的客服效率</h2>
+                <p class="text-white/90 text-lg mb-10 max-w-2xl mx-auto">
+                    立即注册，享受免费试用，无需信用卡，不满意随时取消
+                </p>
+                
+                <div class="max-w-xl mx-auto mb-10">
+                    <a href="trial.html" class="inline-flex flex-col sm:flex-row items-center justify-center gap-4 bg-white text-primary hover:bg-gray-100 px-8 py-4 rounded-lg transition-all shadow-lg hover:shadow-xl font-medium text-lg whitespace-nowrap">
+                        预约试用
+                    </a>
+                    <p class="text-white/70 text-sm mt-4">
+                        注册即表示您同意我们的<a href="#" class="underline">服务条款</a>和<a href="#" class="underline">隐私政策</a>
+                    </p>
+                </div>
+                
+                <div class="flex flex-wrap justify-center gap-8">
+                    <div class="flex items-center">
+                        <i class="fa fa-shield text-2xl mr-3"></i>
+                        <span>数据安全加密</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fa fa-gift text-2xl mr-3"></i>
+                        <span>0元试用</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fa fa-headphones text-2xl mr-3"></i>
+                        <span>7×12小时支持</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 常见问题 -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-[clamp(1.75rem,4vw,2.5rem)] font-bold mb-4">常见问题</h2>
+                <p class="text-gray-600 text-lg">解答您可能有的疑问</p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto space-y-6">
+                <!-- 问题1 -->
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none faq-toggle">
+                        <span class="font-bold text-lg">如何添加我的电商平台店铺？</span>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="px-6 pb-6 hidden faq-content">
+                        <p class="text-gray-600">
+                            添加店铺非常简单，在系统中选择您需要登录的平台，和正常的店铺登录一样，整个过程无需复杂的API配置，通常3分钟内即可完成。目前支持淘宝、天猫、京东、拼多多、抖音电商、快手小店、小红书等主流平台。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 问题2 -->
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none faq-toggle">
+                        <span class="font-bold text-lg">AI客服能处理哪些类型的问题？</span>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="px-6 pb-6 hidden faq-content">
+                        <p class="text-gray-600">
+                            AI客服可以处理大部分咨询，包括商品信息查询（价格、规格、材质等）、物流信息查询、售后处理,退款挽留,小额补偿协商、活动规则解释等。对于复杂或特殊的问题，系统会自动转接给人工客服处理，并提供上下文信息，确保服务的连续性。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 问题3 -->
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none faq-toggle">
+                        <span class="font-bold text-lg">数据安全和隐私如何保障？</span>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="px-6 pb-6 hidden faq-content">
+                        <p class="text-gray-600">
+                            我们采用银行级别的数据加密技术，所有数据传输和存储均经过加密处理。我们严格遵守国家数据安全法规，不会将您的任何商业数据和客户信息分享给第三方。您可以随时导出或删除您的数据，完全掌控自己的信息。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 问题4 -->
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none faq-toggle">
+                        <span class="font-bold text-lg">可以自定义AI回复的语气和风格吗？</span>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="px-6 pb-6 hidden faq-content">
+                        <p class="text-gray-600">
+                            是的，用户可以自定义AI回复的语气和风格，例如设置为亲切活泼、专业严谨或简洁干练等风格。您还可以导入话术表格，让AI的回复更符合您的品牌调性。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 悬浮组件 - 企业微信和预约试用 -->
+    <div class="fixed right-6 bottom-24 z-50 flex flex-col gap-4">
+        <div class="float-widget group relative">
+            <div class="w-14 h-14 bg-white rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-all hover:scale-110 hover:shadow-xl border-2 border-gray-200">
+                <img src="qiyeweixin.png" alt="企业微信" class="w-8 h-8 object-contain">
+            </div>
+            <div class="absolute right-16 top-1/2 -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                添加企业微信咨询
+                <div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 w-2 h-2 bg-gray-800 rotate-45"></div>
+            </div>
+            <div class="wechat-qr absolute bottom-full right-0 mb-4 w-48 bg-white rounded-lg shadow-xl p-3 opacity-0 group-hover:opacity-100 transition-opacity hidden group-hover:block">
+                <div class="w-full aspect-square bg-gray-100 rounded-lg flex items-center justify-center mb-2 overflow-hidden">
+                    <img src="/img/weixin.png" alt="企业微信二维码" class="w-full h-full object-contain">
+                </div>
+                <p class="text-center text-gray-600 text-xs">扫码添加企业微信</p>
+            </div>
+        </div>
+        
+        <div class="float-widget group relative">
+            <a href="trial.html" class="w-14 h-14 bg-white rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-all hover:scale-110 hover:shadow-xl border-2 border-gray-200">
+                <img src="shiyong.png" alt="预约试用" class="w-8 h-8 object-contain">
+            </a>
+            <div class="absolute right-16 top-1/2 -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                预约试用
+                <div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 w-2 h-2 bg-gray-800 rotate-45"></div>
+            </div>
+        </div>
+        
+        <div class="float-widget group relative">
+            <button id="backToTop" class="w-14 h-14 bg-white border-2 border-gray-200 rounded-full shadow-lg flex items-center justify-center text-gray-600 text-xl cursor-pointer hover:bg-gray-50 transition-all hover:scale-110 hover:shadow-xl">
+                <i class="fa fa-arrow-up"></i>
+            </button>
+            <div class="absolute right-16 top-1/2 -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                返回顶部
+                <div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 w-2 h-2 bg-gray-800 rotate-45"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚将通过JavaScript加载 -->
+    <div id="footer-container">
+<footer class="bg-dark text-white pt-16 pb-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10 mb-16">
+            <div class="lg:col-span-2">
+                <div class="flex items-center space-x-2 mb-6">
+                    <img src="/logo.png" alt="智客AI" class="w-10 h-10 rounded-lg object-cover">
+                    <span class="text-xl font-bold">智客AI</span>
+                </div>
+                <p class="text-gray-400 mb-6 max-w-md">
+                    一站式电商AI客服聚合平台，帮助商家高效管理多平台咨询，降低成本，提升转化率。
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-primary transition-colors flex items-center justify-center">
+                        <i class="fa-brands fa-weixin"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-primary transition-colors flex items-center justify-center">
+                        <i class="fa-brands fa-weibo"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-primary transition-colors flex items-center justify-center">
+                        <i class="fa-brands fa-qq"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-bold mb-6">产品</h4>
+                <ul class="space-y-4">
+                    <li><a href="/index.html#features" class="text-gray-400 hover:text-white transition-colors">功能</a></li>
+                    <li><a href="/index.html#brands" class="text-gray-400 hover:text-white transition-colors">合作品牌</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">更新日志</a></li>
+                    <li><a href="/help_center.html" class="text-gray-400 hover:text-white transition-colors">帮助中心</a></li>
+                    <li><a href="/trial.html" class="text-gray-400 hover:text-white transition-colors">预约试用</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-bold mb-6">资源</h4>
+                <ul class="space-y-4">
+                    <li><a href="/help_center.html" class="text-gray-400 hover:text-white transition-colors">帮助中心</a></li>
+                    <li><a href="/peixun/index.html" class="text-gray-400 hover:text-white transition-colors">电商学院</a></li>
+                    <li><a href="/index.html#testimonials" class="text-gray-400 hover:text-white transition-colors">成功案例</a></li>
+                    <li><a href="/team.html" class="text-gray-400 hover:text-white transition-colors">关于我们</a></li>
+                    <li><a href="/articles/competitive-advantage.html" class="text-gray-400 hover:text-white transition-colors">行业分析</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-bold mb-6">联系我们</h4>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <i class="fa fa-envelope text-gray-400 mt-1 mr-3"></i>
+                        <span class="text-gray-400">support@zhikest.com</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa fa-phone text-gray-400 mt-1 mr-3"></i>
+                        <span class="text-gray-400">400-133-0884</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa fa-map-marker text-gray-400 mt-1 mr-3"></i>
+                        <span class="text-gray-400">北京市密云区新南路92号楼4层</span>
+                    </li>
+                </ul>
+            </div>
+            
+        </div>
+        
+        <div class="border-t border-gray-800 pt-8">
+            <div class="mb-6">
+                <h4 class="text-lg font-bold mb-4">友情链接</h4>
+                <ul class="flex flex-wrap gap-4">
+                    <li><a href="https://www.alibaba.com" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm">阿里巴巴</a></li>
+                    <li><a href="https://www.jd.com" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm">京东</a></li>
+                    <li><a href="https://www.pinduoduo.com" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm">拼多多</a></li>
+                    <li><a href="https://www.douyin.com" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm">抖音电商</a></li>
+                </ul>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center">
+               <p class="text-gray-500 text-sm mb-4 md:mb-0 flex items-center">
+  © 2022-2026 智客AI 版权所有 | 京ICP备2026008500号 |
+  <span class="flex items-center gap-1">
+    <img src="/batb.png" alt="公安备案" class="w-5 h-auto">
+    <a href="https://beian.mps.gov.cn/#/query/webSearch?code=11022802260303" rel="noreferrer" target="_blank">京公网安备11022802260303号</a>
+  </span>
+  | 宜迅（北京）科技有限公司
+</p>
+
+                <div class="flex space-x-6">
+                    <a href="/agreement.html" class="text-gray-500 hover:text-gray-300 text-sm">服务条款</a>
+                    <a href="/privacy.html" class="text-gray-500 hover:text-gray-300 text-sm">隐私政策</a>
+                    <a href="/cookie.html" class="text-gray-500 hover:text-gray-300 text-sm">Cookie政策</a>
+                    <a href="/team.html" class="text-gray-500 hover:text-gray-300 text-sm">关于我们</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // 加载导航和页脚组件
+        document.addEventListener('DOMContentLoaded', function() {
+// FAQ折叠效果
+            document.querySelectorAll('.faq-toggle').forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const icon = this.querySelector('i');
+                    
+                    content.classList.toggle('hidden');
+                    icon.classList.toggle('rotate-180');
+                });
+            });
+            
+            // 性能图表
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                    datasets: [
+                        {
+                            label: '咨询量',
+                            data: [120, 190, 130, 150, 200, 250, 180],
+                            borderColor: '#165DFF',
+                            backgroundColor: 'rgba(22, 93, 255, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'AI处理量',
+                            data: [90, 150, 100, 120, 160, 200, 140],
+                            borderColor: '#36D399',
+                            backgroundColor: 'rgba(54, 211, 153, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                        
+                        // 关闭移动菜单
+                        const mobileMenu = document.getElementById('mobileMenu');
+                        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+            
+            // 页面加载动画
+            const sections = document.querySelectorAll('section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100', 'translate-y-0');
+                        entry.target.classList.remove('opacity-0', 'translate-y-10');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            sections.forEach(section => {
+                section.classList.add('transition-all', 'duration-1000', 'opacity-0', 'translate-y-10');
+                observer.observe(section);
+            });
+            
+            // 手动触发首屏元素的动画
+            setTimeout(() => {
+                document.querySelector('section').classList.add('opacity-100', 'translate-y-0');
+                document.querySelector('section').classList.remove('opacity-0', 'translate-y-10');
+            }, 100);
+            
+            // 返回顶部按钮
+            const backToTopBtn = document.getElementById('backToTop');
+            if (backToTopBtn) {
+                backToTopBtn.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+                
+                // 滚动时显示/隐藏返回顶部按钮
+                window.addEventListener('scroll', function() {
+                    if (window.scrollY > 300) {
+                        backToTopBtn.classList.add('opacity-100');
+                        backToTopBtn.classList.remove('opacity-0');
+                    } else {
+                        backToTopBtn.classList.add('opacity-0');
+                        backToTopBtn.classList.remove('opacity-100');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

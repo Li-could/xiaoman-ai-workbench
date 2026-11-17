@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>后台管理 · 小满AI</title>
+  <link rel="stylesheet" href="font-awesome.min.css" />
+  <link rel="stylesheet" href="css/admin.css?v=1" />
+</head>
+<body>
+<div id="app" v-cloak>
+  <div class="layout">
+    <!-- 侧栏 -->
+    <aside class="side">
+      <div class="side-brand">
+        <div class="logo"><i class="fa fa-bolt"></i></div>
+        <div>
+          <div class="t1">小满AI</div>
+          <div class="t2">后台管理</div>
+        </div>
+      </div>
+
+      <nav class="side-nav">
+        <div class="side-item" :class="{active: tab==='overview'}" @click="tab='overview'">
+          <i class="fa fa-dashboard"></i><span>概览</span>
+        </div>
+        <div class="side-item" :class="{active: tab==='users'}" @click="tab='users'">
+          <i class="fa fa-users"></i><span>成员管理</span>
+        </div>
+        <div class="side-item" :class="{active: tab==='stores'}" @click="tab='stores'">
+          <i class="fa fa-shopping-bag"></i><span>店铺管理</span>
+        </div>
+        <div class="side-item" :class="{active: tab==='logs'}" @click="tab='logs'">
+          <i class="fa fa-history"></i><span>操作日志</span>
+        </div>
+      </nav>
+
+      <div class="side-spacer"></div>
+      <div class="side-foot">
+        <a class="side-item" href="/app"><i class="fa fa-arrow-left"></i><span>返回工作台</span></a>
+        <div class="side-item" @click="logout"><i class="fa fa-sign-out"></i><span>退出登录</span></div>
+      </div>
+    </aside>
+
+    <!-- 主体 -->
+    <div class="main">
+      <header class="topbar">
+        <div>
+          <h1>{{ title }}</h1>
+          <div class="sub">{{ sub }}</div>
+        </div>
+        <div class="grow"></div>
+        <div class="tenant-chip"><i class="fa fa-building-o"></i>{{ tenant.name || '—' }}</div>
+        <div class="tenant-chip">
+          <i class="fa fa-user-o"></i>{{ user.name }}
+          <span class="tag" :class="roleTag(user.role)[0]">{{ roleTag(user.role)[1] }}</span>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- ============ 概览 ============ -->
+        <div v-if="tab==='overview'">
+          <div class="stat-grid">
+            <div class="stat">
+              <div class="label">成员</div>
+              <div class="value">{{ stats.users || 0 }}<small>人</small></div>
+              <div class="foot">其中启用 {{ stats.activeUsers || 0 }} 人</div>
+            </div>
+            <div class="stat">
+              <div class="label">接入店铺</div>
+              <div class="value">{{ stats.stores || 0 }}<small>个</small></div>
+              <div class="foot">淘宝 / 京东 / 拼多多 / 抖音</div>
+            </div>
+            <div class="stat">
+              <div class="label">累计会话</div>
+              <div class="value">{{ stats.conversations || 0 }}<small>个</small></div>
+              <div class="foot">消息 {{ stats.messages || 0 }} 条</div>
+            </div>
+            <div class="stat">
+              <div class="label">售后工单</div>
+              <div class="value">{{ stats.tickets || 0 }}<small>张</small></div>
+              <div class="foot">知识库 {{ stats.knowledge || 0 }} 条</div>
+            </div>
+            <div class="stat">
+              <div class="label">AI 调用</div>
+              <div class="value">{{ stats.aiCalls || 0 }}<small>次</small></div>
+              <div class="foot">采纳率 {{ stats.aiAdoption || 0 }}%</div>
+            </div>
+            <div class="stat">
+              <div class="label">模型状态</div>
+              <div class="value" style="font-size:20px">
+                {{ stats.aiConfigured ? '已接入' : '演示模式' }}
+              </div>
+              <div class="foot">{{ stats.aiConfigured ? '真实大模型调用' : '未配置 API Key' }}</div>
+            </div>
+            <div class="stat">
+              <div class="label">创建时间</div>
+              <div class="value" style="font-size:16px;font-weight:600">{{ fmtTime(tenant.createdAt).slice(0,10) }}</div>
+              <div class="foot">工作空间 ID {{ tenant.id }}</div>
+            </div>
+            <div class="stat">
+              <div class="label">数据库</div>
+              <div class="value" style="font-size:16px;font-weight:600">SQLite</div>
+              <div class="foot">data/xiaoman.db</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <h2>最近操作</h2>
+              <span class="hint">最新 8 条</span>
+              <div class="grow"></div>
+              <button class="btn btn-sm" @click="loadLogs"><i class="fa fa-refresh"></i>刷新</button>
+            </div>
+            <div v-if="!logs.length" class="empty"><i class="fa fa-history"></i>暂无操作记录</div>
+            <div v-for="l in logs.slice(0,8)" :key="l.id" class="log-row">
+              <div class="log-time">{{ fmtTime(l.created_at) }}</div>
+              <div class="log-who">{{ l.user_name }}</div>
+              <div class="log-act">{{ l.action }}<span class="log-target">{{ l.target }}</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 成员管理 ============ -->
+        <div v-if="tab==='users'">
+          <div class="card">
+            <div class="card-head">
+              <h2>工作空间成员</h2>
+              <span class="hint">共 {{ users.length }} 人，启用 {{ activeUsers }} 人</span>
+              <div class="grow"></div>
+              <button class="btn btn-primary btn-sm" @click="openCreateUser"><i class="fa fa-plus"></i> 新增成员</button>
+            </div>
+
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>成员</th>
+                  <th style="width:110px">角色</th>
+                  <th style="width:90px">状态</th>
+                  <th style="width:150px">最近登录</th>
+                  <th style="width:190px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="u in users" :key="u.id">
+                  <td>
+                    <div class="name-cell">
+                      <div class="avatar" :style="{background: avatarBg(u.name)}">{{ initial(u.name) }}</div>
+                      <div>
+                        <div style="font-weight:600">{{ u.name }}<span v-if="u.id===user.id" class="tag tag-gray" style="margin-left:6px">我</span></div>
+                        <div class="mono">{{ u.email }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="tag" :class="roleTag(u.role)[0]">{{ roleTag(u.role)[1] }}</span></td>
+                  <td>
+                    <span class="tag" :class="statusTag(u.status)[0]"><span class="dot"></span>{{ statusTag(u.status)[1] }}</span>
+                  </td>
+                  <td class="mono">{{ u.lastLoginAt ? fmtTime(u.lastLoginAt) : '从未登录' }}</td>
+                  <td>
+                    <button class="btn-link" @click="openEditUser(u)">编辑</button>
+                    <button class="btn-link" v-if="u.id!==user.id" @click="toggleUser(u)">{{ u.status==='active' ? '禁用' : '启用' }}</button>
+                    <button class="btn-link danger" v-if="u.id!==user.id" @click="delUser(u)">删除</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 店铺管理 ============ -->
+        <div v-if="tab==='stores'">
+          <div class="card">
+            <div class="card-head">
+              <h2>已接入店铺</h2>
+              <span class="hint">共 {{ stores.length }} 个</span>
+              <div class="grow"></div>
+              <button class="btn btn-primary btn-sm" @click="openCreateStore"><i class="fa fa-plus"></i> 新增店铺</button>
+            </div>
+
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>店铺</th>
+                  <th style="width:110px">平台</th>
+                  <th style="width:160px">账号</th>
+                  <th style="width:90px">状态</th>
+                  <th style="width:150px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="s in stores" :key="s.id">
+                  <td>
+                    <div class="name-cell">
+                      <div class="avatar" :style="{background: s.color}">{{ s.short }}</div>
+                      <div>
+                        <div style="font-weight:600">{{ s.name }}</div>
+                        <div class="mono">{{ s.id }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="tag tag-gray">{{ s.platform }}</span></td>
+                  <td class="mono">{{ s.account || '—' }}</td>
+                  <td><span class="tag" :class="s.status==='active' ? 'tag-green' : 'tag-red'">{{ s.status==='active' ? '正常' : '停用' }}</span></td>
+                  <td>
+                    <button class="btn-link" @click="openEditStore(s)">编辑</button>
+                    <button class="btn-link danger" @click="delStore(s)">删除</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div v-if="!stores.length" class="empty"><i class="fa fa-shopping-bag"></i>还没有接入店铺</div>
+          </div>
+        </div>
+
+        <!-- ============ 操作日志 ============ -->
+        <div v-if="tab==='logs'">
+          <div class="card">
+            <div class="card-head">
+              <h2>操作日志</h2>
+              <span class="hint">最多保留最近 60 条</span>
+              <div class="grow"></div>
+              <button class="btn btn-sm" @click="loadLogs"><i class="fa fa-refresh"></i>刷新</button>
+            </div>
+            <div v-if="!logs.length" class="empty"><i class="fa fa-history"></i>暂无操作记录</div>
+            <div v-for="l in logs" :key="l.id" class="log-row">
+              <div class="log-time">{{ fmtTime(l.created_at) }}</div>
+              <div class="log-who">{{ l.user_name }}</div>
+              <div class="log-act">{{ l.action }}<span class="log-target">{{ l.target }}</span></div>
+              <div class="mono" style="margin-left:auto">{{ l.ip || '' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 成员弹窗 -->
+  <div class="mask" v-if="userModal" @click.self="userModal=null">
+    <div class="modal">
+      <div class="modal-head">
+        <span>{{ userModal.mode==='create' ? '新增成员' : '编辑成员' }}</span>
+        <div class="grow"></div>
+        <button class="icon-btn" @click="userModal=null"><i class="fa fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label>姓名</label>
+          <input class="input" v-model="userModal.form.name" placeholder="如：王晓雨" maxlength="20" />
+        </div>
+        <div class="field">
+          <label>邮箱（登录账号）</label>
+          <input class="input" v-model="userModal.form.email" :disabled="userModal.mode==='edit'" placeholder="name@example.com" />
+        </div>
+        <div class="field">
+          <label>岗位说明</label>
+          <input class="input" v-model="userModal.form.title" placeholder="如：客服坐席 · 淘宝/京东" maxlength="30" />
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>角色</label>
+            <select class="select" v-model="userModal.form.role">
+              <option value="agent">客服坐席</option>
+              <option value="admin">管理员</option>
+            </select>
+          </div>
+          <div class="field" v-if="userModal.mode==='edit'">
+            <label>状态</label>
+            <select class="select" v-model="userModal.form.status">
+              <option value="active">正常</option>
+              <option value="disabled">禁用</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>{{ userModal.mode==='create' ? '初始密码' : '重置密码（留空则不修改）' }}</label>
+          <input class="input" v-model="userModal.form.password" placeholder="至少 6 位" />
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn" @click="userModal=null">取消</button>
+        <button class="btn btn-primary" :disabled="saving" @click="saveUser">
+          <i class="fa" :class="saving ? 'fa-spinner spin' : 'fa-check'"></i>
+          {{ userModal.mode==='create' ? '创建成员' : '保存修改' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 店铺弹窗 -->
+  <div class="mask" v-if="storeModal" @click.self="storeModal=null">
+    <div class="modal">
+      <div class="modal-head">
+        <span>{{ storeModal.mode==='create' ? '新增店铺' : '编辑店铺' }}</span>
+        <div class="grow"></div>
+        <button class="icon-btn" @click="storeModal=null"><i class="fa fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label>店铺名称</label>
+          <input class="input" v-model="storeModal.form.name" placeholder="如：小满旗舰店" maxlength="30" />
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>所属平台</label>
+            <select class="select" v-model="storeModal.form.platform" @change="onPlatformChange">
+              <option v-for="p in platforms" :key="p" :value="p">{{ p }}</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>平台账号</label>
+            <input class="input" v-model="storeModal.form.account" placeholder="如：xiaoman_tb" />
+          </div>
+        </div>
+        <div class="field" v-if="storeModal.mode==='edit'">
+          <label>状态</label>
+          <select class="select" v-model="storeModal.form.status">
+            <option value="active">正常</option>
+            <option value="disabled">停用</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn" @click="storeModal=null">取消</button>
+        <button class="btn btn-primary" :disabled="saving" @click="saveStore">
+          <i class="fa" :class="saving ? 'fa-spinner spin' : 'fa-check'"></i>
+          {{ storeModal.mode==='create' ? '添加店铺' : '保存修改' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toasts">
+    <div v-for="t in toasts" :key="t.id" class="toast" :class="t.type">{{ t.msg }}</div>
+  </div>
+</div>
+
+<script src="vendor/vue.global.prod.js"></script>
+<script src="js/admin.js?v=1"></script>
+</body>
+</html>

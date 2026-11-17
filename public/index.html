@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小满AI - 电商客服聚合工作台</title>
+    <script src="3.4.17.js"></script>
+    <link href="font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36CFC9',
+                        accent: '#722ED1',
+                        dark: '#1D2129',
+                        light: '#F2F3F5',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        info: '#86909C'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            }
+            .modal-fade {
+                animation: fadeIn 0.3s ease;
+            }
+            .modal-scale {
+                animation: scaleIn 0.3s ease;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes scaleIn {
+                from { transform: scale(0.9); opacity: 0; }
+                to { transform: scale(1); opacity: 1; }
+            }
+        }
+    </style>
+    <style>
+        html,
+        body {
+            background-color: #F8F9FA !important;
+        }
+
+        body {
+            color: #1D2129;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(22, 93, 255, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(22, 93, 255, 0.035) 1px, transparent 1px);
+            background-size: 48px 48px;
+            -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.5) 56%, transparent 88%);
+            mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.5) 56%, transparent 88%);
+        }
+
+        .hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border: 1px solid rgba(22, 93, 255, 0.14);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.78);
+            box-shadow: 0 4px 18px rgba(22, 93, 255, 0.06);
+            color: #165DFF;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .hero-kicker-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #00B42A;
+            box-shadow: 0 0 0 4px rgba(0, 180, 42, 0.12);
+            animation: statusPulse 2.4s ease-in-out infinite;
+        }
+
+        .hero-title {
+            margin: 12px auto 0;
+            font-size: clamp(1.55rem, 3vw, 2.2rem);
+            line-height: 1.2;
+            font-weight: 800;
+            color: transparent;
+            background-image: linear-gradient(105deg, #165DFF 0%, #0EA5B7 48%, #722ED1 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(22, 93, 255, 0.08);
+        }
+
+        .hero-subtitle {
+            margin: 8px auto 0;
+            color: #6B7280;
+            font-size: 14px;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: -18%;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(620px circle at 14% 18%, rgba(22, 93, 255, 0.075), transparent 62%),
+                radial-gradient(700px circle at 86% 82%, rgba(114, 46, 209, 0.065), transparent 62%),
+                radial-gradient(540px circle at 78% 12%, rgba(54, 207, 201, 0.06), transparent 60%);
+            animation: auroraShift 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes auroraShift {
+            from { transform: translate(0, 0) scale(1); }
+            to   { transform: translate(2.6%, -2.4%) scale(1.05); }
+        }
+
+        .feature-grid {
+            width: 100%;
+            max-width: 1024px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        main {
+            counter-reset: feature-card;
+        }
+
+        .feature-card {
+            --accent-rgb: 22, 93, 255;
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            padding: 20px;
+            border: 1px solid rgba(229, 230, 235, 0.92);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 28px rgba(29, 33, 41, 0.055);
+            transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+            animation: featureEnter 0.72s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            opacity: 0;
+            background: radial-gradient(260px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(var(--accent-rgb), 0.14), transparent 66%);
+            transition: opacity 0.25s ease;
+            pointer-events: none;
+        }
+
+        .feature-card::after {
+            counter-increment: feature-card;
+            content: '0' counter(feature-card);
+            position: absolute;
+            top: 16px;
+            right: 18px;
+            color: rgba(var(--accent-rgb), 0.44);
+            font-size: 11px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(var(--accent-rgb), 0.28);
+            box-shadow: 0 16px 34px rgba(var(--accent-rgb), 0.12);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(var(--accent-rgb), 0.14);
+            border-radius: 50%;
+            background: rgba(var(--accent-rgb), 0.1);
+            color: rgb(var(--accent-rgb));
+            font-size: 18px;
+            transition: transform 0.28s ease, box-shadow 0.28s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: translateY(-2px) scale(1.06);
+            box-shadow: 0 8px 18px rgba(var(--accent-rgb), 0.15);
+        }
+
+        .feature-card h3 {
+            margin-bottom: 8px;
+            color: #1D2129;
+        }
+
+        .feature-card p {
+            color: #6B7280;
+            line-height: 1.65;
+        }
+
+        .feature-blue { --accent-rgb: 22, 93, 255; }
+        .feature-cyan { --accent-rgb: 5, 164, 182; }
+        .feature-purple { --accent-rgb: 114, 46, 209; }
+        .feature-green { --accent-rgb: 0, 180, 42; }
+        .feature-orange { --accent-rgb: 255, 125, 0; }
+        .feature-slate { --accent-rgb: 107, 114, 128; }
+
+        .feature-grid > .feature-card:nth-child(1) { animation-delay: 80ms; }
+        .feature-grid > .feature-card:nth-child(2) { animation-delay: 180ms; }
+        .feature-grid > .feature-card:nth-child(3) { animation-delay: 280ms; }
+
+        .trust-strip > div {
+            padding: 7px 12px;
+            border: 1px solid rgba(229, 230, 235, 0.9);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.72);
+            box-shadow: 0 4px 14px rgba(29, 33, 41, 0.035);
+        }
+
+        .primary-cta {
+            background-image: linear-gradient(120deg, #165DFF 0%, #0E96F5 100%) !important;
+            box-shadow: 0 10px 24px rgba(22, 93, 255, 0.2) !important;
+        }
+
+        .primary-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(22, 93, 255, 0.26) !important;
+        }
+
+        .secondary-cta {
+            background: rgba(255, 255, 255, 0.82) !important;
+            box-shadow: 0 6px 18px rgba(22, 93, 255, 0.06);
+        }
+
+        .secondary-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(22, 93, 255, 0.1);
+        }
+
+        @keyframes featureEnter {
+            from { opacity: 0; transform: translateY(22px) scale(0.96); }
+            60%  { opacity: 1; transform: translateY(-3px) scale(1.006); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { box-shadow: 0 0 0 4px rgba(0, 180, 42, 0.12); }
+            50% { box-shadow: 0 0 0 7px rgba(0, 180, 42, 0.035); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .feature-card,
+            .hero-kicker-dot,
+            .feature-icon,
+            .primary-cta,
+            .secondary-cta,
+            body::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen overflow-hidden">
+
+    <!-- 顶部导航：品牌 + 登录/注册 -->
+    <div class="fixed top-0 left-0 right-0 z-40">
+        <div class="mx-auto max-w-6xl px-4 py-3 sm:px-6 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2">
+                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white shadow-sm">
+                    <i class="fa fa-comments"></i>
+                </span>
+                <span class="font-semibold text-gray-900">小满AI</span>
+                <span class="hidden sm:inline text-xs text-gray-500">电商客服聚合工作台</span>
+            </a>
+            <div class="flex items-center gap-2">
+                <a href="/login" class="rounded-lg px-3.5 py-1.5 text-sm text-gray-700 transition hover:bg-white/70">登录</a>
+                <a href="/register" class="rounded-lg bg-primary px-4 py-1.5 text-sm text-white shadow-sm transition hover:opacity-90">免费注册</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 右侧客服入口：收起常驻二维码，避免遮挡内容 -->
+    <button
+        id="floatingServiceBtn"
+        type="button"
+        aria-label="打开客服二维码"
+        title="联系客服"
+        class="group fixed right-4 top-1/2 -translate-y-1/2 z-30 hidden md:flex h-14 w-14 items-center justify-center rounded-full border border-gray-200 bg-white shadow-lg hover:shadow-xl transition-all"
+    >
+        <img
+            src="customer-service.png"
+            alt=""
+            class="h-9 w-9 object-contain transition-transform duration-200 group-hover:scale-105"
+        >
+        <span class="pointer-events-none absolute right-full mr-2 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
+            联系客服
+        </span>
+    </button>
+    
+    <!-- 客服二维码弹窗 (默认隐藏) -->
+    <div id="qrcodeModal" class="fixed inset-0 z-50 flex items-center justify-center hidden modal-fade">
+        <!-- 遮罩层 -->
+        <div id="modalOverlay" class="absolute inset-0 bg-black/50"></div>
+        <!-- 弹窗内容 -->
+        <div id="modalContent" class="relative bg-white rounded-xl p-6 shadow-2xl max-w-sm w-full mx-4 modal-scale">
+            <button id="closeModal" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors">
+                <i class="fa fa-times text-lg"></i>
+            </button>
+            <div class="text-center">
+                <h3 class="text-lg font-semibold mb-4">扫码联系客服</h3>
+                <div class="w-56 h-56 mx-auto mb-4 bg-white p-2 border border-gray-100 rounded-lg shadow-md">
+                    <!-- 二维码图片 -->
+                    <img src="whc.png" alt="小满AI客服微信二维码" class="w-full h-full object-cover">
+                </div>
+                <p class="text-sm text-gray-500">微信扫码添加客服，获取一对一服务</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 主内容容器 -->
+    <div class="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 h-screen flex flex-col justify-between py-6">
+        <!-- 顶部Logo和标题 -->
+        <header class="text-center mt-3">
+            <div class="hero-kicker">
+                <span class="hero-kicker-dot" aria-hidden="true"></span>
+                AI客服工作台已就绪
+            </div>
+            <h1 class="hero-title">解放双手，从现在开始</h1>
+            <p class="hero-subtitle">1 分钟接入，用 AI 让客服效率翻倍</p>
+        </header>
+        
+        <!-- 核心功能区 - 6个卡片 -->
+        <main class="flex-grow flex flex-col justify-center my-2">
+            <!-- 第一行3个卡片 -->
+            <div class="feature-grid grid md:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
+                <!-- 功能卡片1 -->
+                <div class="feature-card feature-blue">
+                    <div class="feature-icon">
+                        <i class="fa fa-plug" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-base font-semibold mb-2">多平台聚合中枢</h3>
+                    <p class="text-gray-600 text-xs sm:text-sm">
+                        同步接入淘宝、京东、拼多多等全渠道，一次登录搞定所有店铺接待
+                    </p>
+                </div>
+                
+                <!-- 功能卡片2 -->
+                <div class="feature-card feature-cyan">
+                    <div class="feature-icon">
+                        <i class="fa fa-microchip" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-base font-semibold mb-2">进化无限可能</h3>
+                    <p class="text-gray-600 text-xs sm:text-sm">
+                        自动学习人工回复，让碎片化信息成为生产力
+                    </p>
+                </div>
+                
+                <!-- 功能卡片3 -->
+                <div class="feature-card feature-purple">
+                    <div class="feature-icon">
+                        <i class="fa fa-database" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-base font-semibold mb-2">数据同步中枢</h3>
+                    <p class="text-gray-600 text-xs sm:text-sm">
+                        全平台会话记录、售后聚合处理，多维度筛选复盘一目了然
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 第二行3个新增卡片 -->
+            <div class="feature-grid grid md:grid-cols-3 gap-4 sm:gap-6">
+                <!-- 功能卡片4 -->
+                <div class="feature-card feature-green">
+                    <div class="feature-icon">
+                        <i class="fa fa-line-chart" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-base font-semibold mb-2">强大模型支持</h3>
+                    <p class="text-gray-600 text-xs sm:text-sm">
+                        自动订单备注，发图片，发视频，等多模态语言模型
+                    </p>
+                </div>
+                
+                <!-- 功能卡片5 -->
+                <div class="feature-card feature-orange">
+                    <div class="feature-icon">
+                        <i class="fa fa-shield" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-base font-semibold mb-2">风险监控预警</h3>
+                    <p class="text-gray-600 text-xs sm:text-sm">
+                        敏感词替换，转接设置，个性化配置中心更贴合复杂业务需求
+                    </p>
+                </div>
+                
+                <!-- 功能卡片6 -->
+                <div class="feature-card feature-slate">
+                    <div class="feature-icon">
+                        <i class="fa fa-cog" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-base font-semibold mb-2">售后全能支持</h3>
+                    <p class="text-gray-600 text-xs sm:text-sm">
+                        快递拦截，物流预警，仅退款，超时预警全能型售后助手
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 信任背书 -->
+            <div class="trust-strip flex flex-wrap justify-center gap-x-3 gap-y-2 max-w-3xl mx-auto my-6 text-sm">
+                <div class="flex items-center">
+                    <i class="fa fa-check-circle text-primary mr-1 text-xs"></i>
+                    <span class="text-gray-700">已服务2万+电商商家</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fa fa-check-circle text-primary mr-1 text-xs"></i>
+                    <span class="text-gray-700">平均提升接待效率80%+</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fa fa-check-circle text-primary mr-1 text-xs"></i>
+                    <span class="text-gray-700">7×24小时不间断服务</span>
+                </div>
+            </div>
+        </main>
+        
+        <!-- 行动引导区 -->
+        <footer class="text-center mb-4">
+            <div class="flex flex-col sm:flex-row justify-center gap-3 mb-4">
+                <button id="showQrcodeBtn" class="primary-cta px-6 py-2.5 text-white rounded-lg font-medium transition-all text-sm">
+                    <i class="fa fa-headphones mr-1" aria-hidden="true"></i>
+                    客服协助
+                </button>
+                <button id="tutorialBtn" class="secondary-cta px-6 py-2.5 text-primary border border-primary rounded-lg font-medium transition-all text-sm">
+                    <i class="fa fa-play-circle mr-1" aria-hidden="true"></i>查看教程
+                </button>
+            </div>
+            <!-- 移动端客服入口 -->
+            <div class="md:hidden mb-2">
+                <button class="flex items-center justify-center gap-1 text-primary text-xs">
+                    <i class="fa fa-weixin"></i>
+                    <span>客服微信：zhikeai001</span>
+                </button>
+            </div>
+            <p class="text-gray-500 text-xs">
+                提示：联系客服，享一对一服务
+            </p>
+        </footer>
+    </div>
+    
+    <!-- 页面动画脚本 -->
+    <script>
+        // 查看教程按钮点击事件处理函数
+        function c1() {
+            const payload = {
+                request: JSON.stringify({
+                    action: "查看教程",
+                })
+            };
+
+            if (typeof window.g_click === 'function') {
+                window.g_click(payload);
+                return;
+            }
+
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    source: 'zhike-embedded-page',
+                    action: '查看教程',
+                    data: null,
+                }, window.location.origin);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // 页面元素渐入动画
+            const elements = document.querySelectorAll('header, main > div, footer > div');
+            
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(10px)';
+                el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 100 + index * 80);
+            });
+
+            // 功能卡片鼠标跟随高光
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelectorAll('.feature-card').forEach((card) => {
+                    card.addEventListener('pointermove', (event) => {
+                        const rect = card.getBoundingClientRect();
+                        card.style.setProperty('--mouse-x', `${event.clientX - rect.left}px`);
+                        card.style.setProperty('--mouse-y', `${event.clientY - rect.top}px`);
+                    });
+
+                    card.addEventListener('pointerleave', () => {
+                        card.style.removeProperty('--mouse-x');
+                        card.style.removeProperty('--mouse-y');
+                    });
+                });
+            }
+            
+            // 客服二维码弹窗功能
+            const modal = document.getElementById('qrcodeModal');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalContent = document.getElementById('modalContent');
+            const showQrcodeBtn = document.getElementById('showQrcodeBtn');
+            const floatingServiceBtn = document.getElementById('floatingServiceBtn');
+            const closeModal = document.getElementById('closeModal');
+            
+            // 显示弹窗
+            const openModal = () => {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // 防止背景滚动
+            };
+
+            showQrcodeBtn.addEventListener('click', openModal);
+            floatingServiceBtn?.addEventListener('click', openModal);
+            
+            // 关闭弹窗的函数
+            const hideModal = () => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = ''; // 恢复背景滚动
+            };
+            
+            // 点击关闭按钮
+            closeModal.addEventListener('click', hideModal);
+            
+            // 点击遮罩层
+            modalOverlay.addEventListener('click', hideModal);
+            
+            // 点击弹窗内容不关闭
+            modalContent.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+            
+            // 按ESC键关闭弹窗
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    hideModal();
+                }
+            });
+            
+            // 查看教程按钮点击事件绑定
+            const tutorialBtn = document.getElementById('tutorialBtn');
+            tutorialBtn.addEventListener('click', c1);
+        });
+    </script>
+</body>
+</html>
+    

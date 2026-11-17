@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<style>
+  body { width: 340px; margin: 0; padding: 14px; font: 13px/1.7 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; color: #1f2329; }
+  h2 { font-size: 15px; margin: 0 0 4px; display: flex; align-items: center; gap: 6px; }
+  h2 .logo { width: 22px; height: 22px; border-radius: 6px; background: #ff5000; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .sub { color: #86909c; font-size: 12px; margin-bottom: 12px; }
+  label { display: block; font-size: 12px; color: #4e5969; margin: 10px 0 4px; }
+  input[type=text] { width: 100%; box-sizing: border-box; border: 1px solid #e5e7eb; border-radius: 6px; padding: 7px 9px; font-size: 12px; }
+  .row { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+  button { border: 0; border-radius: 6px; background: #ff5000; color: #fff; padding: 7px 14px; font-size: 13px; cursor: pointer; }
+  button.ghost { background: #f2f3f5; color: #4e5969; }
+  .status { margin-top: 12px; padding: 9px 10px; border-radius: 8px; font-size: 12px; }
+  .status.ok { background: #e8ffef; color: #1a9b4b; }
+  .status.warn { background: #fff7e8; color: #d46b08; }
+  .status.err { background: #ffece8; color: #cb2634; }
+  details { margin-top: 12px; }
+  summary { cursor: pointer; color: #165dff; font-size: 12px; }
+  .kv { font-size: 11px; color: #86909c; }
+  code { background: #f2f3f5; padding: 1px 4px; border-radius: 4px; font-size: 11px; word-break: break-all; }
+  .switch-row { display: flex; align-items: center; gap: 7px; margin-top: 10px; font-size: 13px; cursor: pointer; }
+</style>
+</head>
+<body>
+  <h2><span class="logo">桥</span>小满消息桥</h2>
+  <div class="sub">本地登录店铺后台后，实时把客户消息推送到工作台</div>
+
+  <label>工作台 Webhook 地址（在店铺「接入详情 → 消息接收」里复制）</label>
+  <input id="hookUrl" type="text" placeholder="http://127.0.0.1:8787/api/hooks/inbox/ik_..." />
+
+  <label class="switch-row">
+    <input id="enabled" type="checkbox" checked /> 开启实时监听
+  </label>
+  <label class="switch-row">
+    <input id="onlyUnread" type="checkbox" checked /> 只抓「未读」买家会话（防平台通知/自回复循环）
+  </label>
+  <label class="switch-row">
+    <input id="autoHarvest" type="checkbox" checked /> 停在「聊天记录查询」页时自动导入完整对话
+  </label>
+
+  <div class="row">
+    <button id="save">保存</button>
+    <button id="test" class="ghost">测试连接</button>
+  </div>
+
+  <div class="row" style="margin-top:10px">
+    <button id="liveOne">抓取当前正在聊的这个客户</button>
+  </div>
+  <div class="kv" style="margin-top:4px">
+    打开某个客户的聊天窗口后点这里：把右侧整段对话（客户说的每句话、图片、链接）同步到工作台。
+  </div>
+
+  <div class="row" style="margin-top:10px">
+    <button id="harvest" class="ghost">导入「聊天记录查询」页的历史记录</button>
+  </div>
+
+  <div class="row" style="margin-top:10px">
+    <button id="diag" class="ghost">上传页面诊断（抓不到时点这里）</button>
+  </div>
+  <div class="kv" style="margin-top:4px">
+    抓不到消息时点一下，把当前页面的结构传给工作台，我按真实结构校准解析规则。
+  </div>
+
+  <div id="pageHint" class="status warn" style="margin-top:10px">正在检查当前页面…</div>
+  <div id="liveHint" class="status warn" style="display:none;margin-top:8px"></div>
+
+  <div id="harvestStatus" class="status ok" style="display:none"></div>
+
+  <div id="status" class="status warn">http://127.0.0.1:8787/api/hooks/inbox/ik_24fbd34f003454b62cdb10a15b6593fc
+</div>
+
+  <details>
+    <summary>高级：自定义抓取选择器（抓不准时再填）</summary>
+    <label>会话列表容器（CSS 选择器）</label>
+    <input id="selList" type="text" placeholder="如 .conversation-list" />
+    <label>单个会话项</label>
+    <input id="selItem" type="text" placeholder="如 .session-item" />
+    <label>昵称</label>
+    <input id="selName" type="text" placeholder="如 .nick（留空自动取第一行）" />
+    <label>最新消息</label>
+    <input id="selText" type="text" placeholder="如 .last-msg（留空自动取最后一行）" />
+    <label>回复输入框（回写平台用）</label>
+    <input id="selInput" type="text" placeholder="如 textarea.chat-input（留空自动识别）" />
+    <label>发送按钮（回写平台用）</label>
+    <input id="selSend" type="text" placeholder="如 .send-btn（留空自动找「发送」按钮）" />
+    <div class="kv" style="margin-top:6px">在商家后台页面按 F12 找到聊天列表对应的 class 名填进来。</div>
+  </details>
+
+  <details>
+    <summary>使用说明</summary>
+    <div class="kv">
+      1. 在工作台「店铺管理 → 接入详情 → 消息接收」复制 Webhook 地址，粘贴到上面。<br />
+      2. 用本浏览器登录店铺后台（如拼多多 mms.pinduoduo.com、千牛 qn.taobao.com）。<br />
+      3. 客户发消息后，本扩展会自动推送到工作台，AI 自动回复，客服可接手。<br />
+      4. 本扩展只在你打开的商家后台页面读取聊天列表并发送到本机 127.0.0.1，不上传任何数据到外部服务器。
+    </div>
+  </details>
+
+<script src="popup.js"></script>
+</body>
+</html>
