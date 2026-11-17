@@ -46,7 +46,7 @@ copy .env.example .env      # Windows
 npm install mysql2 --registry=https://registry.npmmirror.com
 ```
 
-当前仓库里的 `.env` 已配置为：`root@127.0.0.1:3306/xiaoman`。
+出于安全，仓库不包含 `.env`（已在 `.gitignore` 中排除）；请按 `.env.example` 自行填写数据库账号密码。示例连接：`root@127.0.0.1:3306/xiaoman`。
 库 `xiaoman` **不需要手动创建**，首次启动会自动 `CREATE DATABASE IF NOT EXISTS` 并建好全部表。
 
 ### 1) 启动
@@ -71,8 +71,8 @@ npm install mysql2 --registry=https://registry.npmmirror.com
 
 | 角色 | 邮箱 | 密码 | 权限 |
 |---|---|---|---|
-| 管理员 | `admin@xiaoman.ai` | `xiaoman123` | 工作台 + 后台管理（成员/店铺/日志） |
-| 客服坐席 | `agent@xiaoman.ai` | `xiaoman123` | 仅工作台，访问 `/admin` 会被拦回 |
+| 管理员 | `admin@xiaoman.ai` | `****`（见 .env/部署配置） | 工作台 + 后台管理（成员/店铺/日志） |
+| 客服坐席 | `agent@xiaoman.ai` | `****`（见 .env/部署配置） | 仅工作台，访问 `/admin` 会被拦回 |
 
 新用户可在 `/register` 自助注册：**注册即自动创建一个独立工作空间**，并灌入一套演示数据（4 个店铺 / 10 个会话 / 6 张售后工单 / 6 条知识库），注册完立刻能上手，不需要手动造数据。
 
